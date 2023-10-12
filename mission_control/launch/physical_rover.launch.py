@@ -7,13 +7,16 @@ from ament_index_python.packages import get_package_share_directory
 
 def generate_launch_description():
     ld = LaunchDescription()
+
+    localization_stack_nodes = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("localization_stack"), "/launch/localization_stack.launch.py"]),
+    )
     
-    joystick_node = Node(
-            package='mission_control',
-            executable='joystick.py',
-            name='joystick_node'
-        )
-    
-    ld.add_action(joystick_node)
+    software_nodes = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("mission_control"), "/launch/software_rover.launch.py"]),
+    )
+
+    ld.add_action(localization_stack_nodes)
+    ld.add_action(software_nodes)
 
     return ld
