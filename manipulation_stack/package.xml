@@ -4,13 +4,14 @@
   <name>manipulation_stack</name>
   <version>0.0.0</version>
   <description>TODO: Package description</description>
-  <maintainer email="abmo19@student.aau.dk">anton</maintainer>
+  <maintainer email="abmoRobotics@gmail.com">Anton Bjørndahl Mortensen</maintainer>
   <license>TODO: License declaration</license>
 
   <buildtool_depend>ament_cmake</buildtool_depend>
 
   <depend>rclcpp</depend>
   <depend>rclpy</depend>
+  <depend>std_msgs</depend>
 
   <test_depend>ament_lint_auto</test_depend>
   <test_depend>ament_lint_common</test_depend>
