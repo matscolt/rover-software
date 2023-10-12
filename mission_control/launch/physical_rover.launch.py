@@ -16,7 +16,12 @@ def generate_launch_description():
         PythonLaunchDescriptionSource([get_package_share_directory("mission_control"), "/launch/software_rover.launch.py"]),
     )
 
+    hardware_nodes = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([get_package_share_directory("hardware"), "/launch/hardware.launch.py"]),
+    )
+
     ld.add_action(localization_stack_nodes)
     ld.add_action(software_nodes)
+    ld.add_action(hardware_nodes)
 
     return ld
