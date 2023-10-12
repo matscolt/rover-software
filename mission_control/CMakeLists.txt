@@ -10,6 +10,26 @@ find_package(ament_cmake REQUIRED)
 find_package(rclcpp REQUIRED)
 find_package(rclpy REQUIRED)
 
+# Add the executable for the C++ node
+add_executable(placeholder_node src/placeholder_node.cpp)
+ament_target_dependencies(placeholder_node rclcpp std_msgs)
+
+# Install the C++ node executable
+install(TARGETS
+  placeholder_node
+  DESTINATION lib/${PROJECT_NAME}
+)
+
+# Install python nodes
+install(PROGRAMS
+  scripts/joystick.py
+  DESTINATION lib/${PROJECT_NAME})
+
+# Install Python launch files
+install(DIRECTORY launch
+  DESTINATION share/${PROJECT_NAME}/
+)
+
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
   # the following line skips the linter which checks for copyrights
