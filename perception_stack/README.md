@@ -2,5 +2,5 @@
 ## Software architecture
 architecture stuff. 
 ### Nodes
-for documentation of see: [nodes](perception_stack/docs/Nodes.md)
+for documentation of see: [nodes](docs/Nodes.md)
 ## bugs
