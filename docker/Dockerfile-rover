@@ -1,0 +1,136 @@
+# Prebuilt base image with jetpack 6.0, pytorch 2.4 and ROS2 humble, please ensure that it has already been built.
+FROM base-image-rover
+ARG DEBIAN_FRONTEND=noninteractive
+
+
+
+# Args
+ARG ROVER_REPO_SOFTWARE_NAME=rover-software
+ARG ROVER_REPO_HARDWARE_NAME=aau-rover-hardware
+ARG BASE_FOLDER=/root/orin
+ARG ROS_WORKSPACE_NAME=ros_ws
+ARG ROS_DISTRO=humble
+ARG ZED_WORKSPACE_NAME=ros2_zed_ws
+
+
+# Install utils
+RUN apt-get update && apt-get install nano && apt-get install iputils-ping
+# Install tools for canbus
+RUN apt-get install busybox && apt-get install iproute2 -y
+RUN apt-get install -y --no-install-recommends zstd wget less cmake curl gnupg2 \
+    build-essential python3 python3-pip python3-dev python3-setuptools libusb-1.0-0-dev -y 
+RUN apt-get install libspnav-dev -y && \
+    apt-get install libbluetooth-dev -y && \
+    apt-get install libcwiid-dev -y
+RUN apt-get install git -y && \
+    apt-get install python3-rosdep2 -y
+RUN  apt-get install kmod
+
+# PIP packages
+RUN pip3 install grpcio==1.58.0
+RUN pip3 install skrl==1.3.0
+RUN pip3 install Jetson.GPIO
+RUN pip3 install onnx
+RUN pip3 install canopen
+RUN pip3 install numpy --upgrade
+RUN pip3 install protobuf 
+RUN pip3 install requests 
+RUN pip3 install pyrealsense2
+
+# Install the ZED SDK
+ARG ZED_SDK_MAJOR=4
+ARG ZED_SDK_MINOR=2
+ARG ZED_SDK_PATCH=4
+ARG L4T_MAJOR=36
+ARG L4T_MINOR=3
+
+RUN echo "# R${L4T_MAJOR} (release), REVISION: ${L4T_MINOR}" > /etc/nv_tegra_release && \
+   apt-get update -y || true && \
+   wget -q --no-check-certificate -O ZED_SDK_Linux_JP.run \
+   https://download.stereolabs.com/zedsdk/${ZED_SDK_MAJOR}.${ZED_SDK_MINOR}/l4t${L4T_MAJOR}.${L4T_MINOR}/jetsons && \
+   chmod +x ZED_SDK_Linux_JP.run ; ./ZED_SDK_Linux_JP.run -- silent skip_tools && \
+   rm -rf /usr/local/zed/resources/* && \
+   rm -rf ZED_SDK_Linux_JP.run 
+
+RUN python3 /usr/local/zed/get_python_api.py
+
+# This symbolic link is needed to use the streaming features on Jetson inside a container
+RUN ln -sf /usr/lib/aarch64-linux-gnu/tegra/libv4l2.so.0 /usr/lib/aarch64-linux-gnu/libv4l2.so
+
+# Forces Docker to rebuild steps below by changing the CACHEBUST value using $(date +%s) (time in seconds since 1970).
+#ARG CACHEBUST=1
+
+# Clone repos
+RUN mkdir -p ${BASE_FOLDER}/${ROS_WORKSPACE_NAME}/src && \
+    cd ${BASE_FOLDER}/${ROS_WORKSPACE_NAME}/src && \
+    git clone https://github.com/AAU-Space-Robotics/${ROVER_REPO_SOFTWARE_NAME}.git --recursive && \
+    git clone https://github.com/AAU-Space-Robotics/${ROVER_REPO_HARDWARE_NAME}.git 
+
+# Change working directory to ROS 2 Workspace
+WORKDIR ${BASE_FOLDER}/${ROS_WORKSPACE_NAME}
+
+# Install dependencies
+RUN apt-get update -y || true && rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y 
+
+RUN /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash; colcon build --packages-select hardware"
+
+#################################
+#### ZED camera setup processs ##
+#################################
+COPY SN35803121.conf /usr/local/zed/settings/
+COPY SN37915676.conf /usr/local/zed/settings/
+RUN pip install empy==3.3.4
+RUN mkdir -p ${BASE_FOLDER}/${ZED_WORKSPACE_NAME}/src && \
+	git clone --recurse-submodules -b humble-v4.1.4 https://github.com/stereolabs/zed-ros2-wrapper.git ${BASE_FOLDER}/${ZED_WORKSPACE_NAME}/src 
+
+WORKDIR $BASE_FOLDER/$ZED_WORKSPACE_NAME/src/zed_wrapper/config
+RUN rm common.yaml
+COPY common.yaml common.yaml
+
+WORKDIR ${BASE_FOLDER}/${ROS_WORKSPACE_NAME}
+
+RUN apt-get update -y && \
+        rosdep update -y && \
+        rosdep install --from-paths ${BASE_FOLDER}/${ZED_WORKSPACE_NAME}/src --ignore-src -r -y
+
+RUN cd ${BASE_FOLDER}/${ZED_WORKSPACE_NAME} && \
+   /bin/bash -c "source /opt/ros/$ROS_DISTRO/setup.bash && \
+        colcon build --parallel-workers $(nproc) --symlink-install \
+        --event-handlers console_direct+ --base-paths src \
+        --cmake-args ' -DCMAKE_BUILD_TYPE=Release' \
+        ' -DCMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs' \
+        ' -DCMAKE_CXX_FLAGS="-Wl,--allow-shlib-undefined"' \
+        ' --no-warn-unused-cli' "
+
+
+RUN echo source ${BASE_FOLDER}/${ZED_WORKSPACE_NAME}/install/local_setup.sh >> ~/.bashrc && \
+    echo source /opt/ros/${ROS_DISTRO}/setup.bash >> ~/.bashrc 
+# # Source ROS 2 on startup
+RUN echo "source ${BASE_FOLDER}/${ROS_WORKSPACE_NAME}/install/setup.bash" >> ~/.bashrc
+
+RUN echo "export ROS_DOMAIN_ID=1" >> ~/.bashrc
+
+# add something to make the modprode work in the container
+# RUN apt-get update && apt-get install kmod
+
+# https://forums.developer.nvidia.com/t/logitech-f710-kernel-module-issues-jetpack-6/296904/20
+# RUN git clone https://github.com/paroj/xpad.git /usr/src/xpad-0.4
+# RUN apt-get update && apt-get install dkms -y
+# COPY /headers_for_F710 /usr/src/linux-headers-5.15.148-tegra-ubuntu22.04_aarch64
+# RUN dkms install -m xpad -v 0.4 --kernelsourcedir /usr/src/linux-headers-5.15.148-tegra-ubuntu22.04_aarch64
+# Copy the entrypoint script into the container
+COPY ./entrypoint.sh /
+
+
+
+RUN apt-get install -y ros-humble-rmw-cyclonedds-cpp 
+RUN echo "export RMW_IMPLEMENTATION=rmw_cyclonedds_cpp" >> /root/.bashrc
+
+RUN apt-get install -y neovim
+
+ENV TERM=xterm-256color
+RUN echo "PS1='\[\e[31m\]\u\[\e[0m\]|\[\e[38;5;33m\]\w\\[\e[0m\]|\n\$ '" >> /root/.bashrc
+# Set the entrypoint script as the entry point for the container
+ENTRYPOINT ["/entrypoint.sh"]
+RUN rm -rf /var/lib/apt/lists/*
