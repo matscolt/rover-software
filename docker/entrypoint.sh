@@ -23,6 +23,7 @@ ip link set up can1
 
 # Add ROS 2 sourcing to bashrc so it's available in all new shells
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
+echo "alias run_base_system='cd /workspace && colcon build && source install/setup.bash && ros2 launch hardware ackermann.launch.py'" >> ~/.bashrc
 
 if [[ $1 == "autostart" ]]
 then
