@@ -1,0 +1,21 @@
+services:
+  rover:
+    build:
+      context: .
+      dockerfile: Dockerfile-new
+    container_name: rover-software
+    volumes:
+      - ../src:/workspace/src
+      - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    environment:
+      # - DISPLAY=${DISPLAY}
+      - ROS_DOMAIN_ID=0
+    network_mode: host
+    privileged: true
+    runtime: nvidia
+    devices:
+      - /dev:/dev
+    # restart: unless-stopped
