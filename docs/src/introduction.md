@@ -2,7 +2,7 @@
 
 # AAU Rover Software Overview
 
-Welcome to the AAU Rover Software Overview. ......
+Welcome to the AAU Rover Software Overview. ....
 ## Table of Contents
 
 - [**Installation**](./getting_started/installation/installation.md): Provides a step-by-step guide to install the AAU Rover Software on the Rover.
