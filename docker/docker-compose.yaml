@@ -2,7 +2,7 @@ services:
   rover:
     build:
       context: .
-      dockerfile: Dockerfile-new
+      dockerfile: Dockerfile
     container_name: rover-software
     volumes:
       - ../src:/workspace/src

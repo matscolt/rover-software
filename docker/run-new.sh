@@ -1,1 +1,0 @@
-docker compose --file docker-compose.yaml up rover --detach --build --remove-orphans
