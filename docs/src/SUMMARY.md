@@ -3,6 +3,7 @@
 
 # Getting Started
 - [Installation](<./getting_started/installation/installation.md>)
+- [Launching the Robot](<./getting_started/launching/launching.md>)
 - [Examples](<./getting_started/examples/examples.md>)
 
 # ROS2 Stack
