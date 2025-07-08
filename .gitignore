@@ -1,0 +1,60 @@
+# ROS 2 build and install artifacts
+build/
+install/
+log/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# CMake
+CMakeFiles/
+CMakeCache.txt
+cmake_install.cmake
+Makefile
+
+# Colcon/ament/rosdep
+.colcon*
+.ament*
+.rosdep*
+
+# VSCode
+.vscode/
+.code-workspace
+
+# Docker
+*.env
+*.log
+docker/*.log
+docker/.env
+
+# Misc
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Notebooks
+.ipynb_checkpoints/
+
+# Test results
+*.test_result.json
+
+# ROS 2 launch logs
+*.launch.pyc
+
+# Ignore docs build artifacts
+docs/book/
+
+# Ignore user-specific config
+*.local
+*.user
+
+# Ignore ROS 2 workspace overlays
+overlay_ws/
+
+# Ignore generated HTML
+**/00Tree.html

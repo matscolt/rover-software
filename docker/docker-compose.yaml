@@ -3,10 +3,22 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        L4T_VERSION_MAJOR: 36 # jetpack version 36.4.0 
+        L4T_VERSION_MINOR: 4
+        L4T_VERSION_PATCH: 0
+        ZED_SDK_MAJOR: 5 # ZED SDK version 5.0.3
+        ZED_SDK_MINOR: 0
+        ZED_SDK_PATCH: 3
+        ZED_ROS2_WRAPPER_FOLDER: /home/zed_ros2_ws
+        ZED_ROS2_WRAPPER_BRANCH: master
+        ZED_ROS2_WRAPPER_URL: https://github.com/stereolabs/zed-ros2-wrapper.git
     container_name: rover-software
     volumes:
       - ../src:/workspace/src
+      - /tmp/argus_socket:/tmp/argus_socket
       - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
+
     working_dir: /workspace
     stdin_open: true
     tty: true
@@ -18,4 +30,18 @@ services:
     runtime: nvidia
     devices:
       - /dev:/dev
-    # restart: unless-stopped
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+  triton-server:
+    image: nvcr.io/nvidia/tritonserver:23.02-py3
+    container_name: triton-server
+    volumes:
+      - ./triton_models:/models
+    network_mode: host
+    # ports:
+    #   - "8000:8000" # HTTP
+    #   - "8001:8001" # gRPC
+    #   - "8002:8002" # Metrics
+    command: tritonserver --model-repository=/models
+    runtime: nvidia
+    privileged: true

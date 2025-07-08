@@ -2,8 +2,6 @@
 In order to launch the rover software, you need to follow these steps:
 
 
-
-
 1. **Navigate to the Rover Software Directory**: Open a terminal and navigate to the directory where the rover software is located.
     ```bash
     cd /workspace/rover-software/docker
