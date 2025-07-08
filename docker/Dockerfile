@@ -170,7 +170,7 @@ RUN apt-get update && apt-get install -y python3-pip && \
 RUN apt-get install busybox && apt-get install iproute2 -y && \
     apt-get install net-tools -y
 
-
+RUN pip3 install tritonclient[all]
 
 
 

@@ -16,7 +16,9 @@ services:
     container_name: rover-software
     volumes:
       - ../src:/workspace/src
+      - /tmp/argus_socket:/tmp/argus_socket
       - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
+
     working_dir: /workspace
     stdin_open: true
     tty: true
@@ -28,4 +30,18 @@ services:
     runtime: nvidia
     devices:
       - /dev:/dev
-    # restart: unless-stopped
+      - /dev/video0:/dev/video0
+      - /dev/video1:/dev/video1
+  triton-server:
+    image: nvcr.io/nvidia/tritonserver:23.02-py3
+    container_name: triton-server
+    volumes:
+      - ./triton_models:/models
+    network_mode: host
+    # ports:
+    #   - "8000:8000" # HTTP
+    #   - "8001:8001" # gRPC
+    #   - "8002:8002" # Metrics
+    command: tritonserver --model-repository=/models
+    runtime: nvidia
+    privileged: true
