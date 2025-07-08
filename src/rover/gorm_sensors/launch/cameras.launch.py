@@ -8,21 +8,21 @@ from launch_ros.substitutions import FindPackageShare
 def generate_launch_description():
     ld = LaunchDescription()
 
-    zed_top = IncludeLaunchDescription(
+    zed_front = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            FindPackageShare('zed_wrapper'), '/launch/zed2i.launch.py'
+            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
         ]),
         launch_arguments={
             'camera_model': 'zed2i',
             'serial_number': '37915676',
             'zed_id': '0',
-            'node_name': 'top_camera'
+            'node_name': 'front_top_camera'
         }.items()
     )
 
     zed_tracking = IncludeLaunchDescription(
         PythonLaunchDescriptionSource([
-            FindPackageShare('zed_wrapper'), '/launch/zed2i.launch.py'
+            FindPackageShare('zed_wrapper'), '/launch/zed_camera.launch.py'
         ]),
         launch_arguments={
             'camera_model': 'zed2i',
@@ -38,7 +38,7 @@ def generate_launch_description():
         name='camera_pose',
     )
 
-    ld.add_action(zed_top)
-    ld.add_action(zed_tracking)
+    ld.add_action(zed_front)
+    #ld.add_action(zed_tracking)
     #ld.add_action(camera_pose)
     return ld
