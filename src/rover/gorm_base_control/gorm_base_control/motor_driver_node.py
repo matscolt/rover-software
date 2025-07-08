@@ -161,9 +161,6 @@ class MotorDriverNode(Node):
                 node.sdo['Controlword'].phys = 0x0006
             self.get_logger().info("Sent 'Shutdown' command (0x0006) to all motors.")
 
-            # It's good practice to allow a moment for the state transition to occur.
-            # A more robust implementation would check the Statusword to confirm the state change.
-            
             for node_id in self.network:
                 node = self.network[node_id]
                 # Send the "Disable Voltage" command (0x0000) to transition to "Switch on Disabled"
