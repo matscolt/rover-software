@@ -5,26 +5,41 @@ from launch_ros.actions import Node
 def generate_launch_description():
     ld = LaunchDescription()
 
-    # Placeholder: Add robot_state_publisher_node here
-    robot_state_publisher_node = Node(
-        package='gorm_description',
-        executable='robot_state_publisher_node',
-        name='robot_state_publisher_node',
+    # cmd_vel to motor commands converter
+    ackermann_node = Node(
+        package='gorm_base_control',
+        executable='ackermann_node',
+        name='ackermann_node',
         output='screen'
     )
 
-    # Placeholder: Add ros2_control_node here
-    ros2_control_node = Node(
-        package='ros2_control',
-        executable='ros2_control_node',
-        name='ros2_control_node',
+    motor_driver_node = Node(
+        package='gorm_base_control',
+        executable='motor_driver_node',
+        name='motor_driver_node',
         output='screen'
     )
 
-    # Add nodes to launch description
-    ld.add_action(robot_state_publisher_node)
-    ld.add_action(ros2_control_node)
+    # Joy node
+    joy_node = Node(
+        package='joy',
+        namespace='joy',
+        executable='joy_node',
+        name='joy_node',
+        output='screen'
+    )
 
-    # Add more nodes or launch files as needed for full system bringup
+    # Joy to cmd_vel converter (if reimplemented in gorm_teleop)
+    joy_to_cmd_vel_node = Node(
+        package='gorm_teleop',
+        executable='joy_to_cmd_vel_node',
+        name='joy_to_cmd_vel_node',
+        output='screen'
+    )
+
+    ld.add_action(joy_node)
+    ld.add_action(joy_to_cmd_vel_node)
+    ld.add_action(ackermann_node)
+    ld.add_action(motor_driver_node)
 
     return ld
