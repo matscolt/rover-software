@@ -4,6 +4,7 @@ import signal
 import Jetson.GPIO as GPIO
 import rclpy
 import canopen
+import atexit
 
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
@@ -61,7 +62,8 @@ class MotorDriverNode(Node):
         self.startup_motors2()
 
         # Register shutdown callback
-        rclpy.get_default_context().on_shutdown(self.on_shutdown)
+        # rclpy.get_default_context().on_shutdown(self.on_shutdown)
+        atexit.register(self.on_shutdown)
 
     def init_settings(self):
         # Max linear and angular velocities
@@ -150,15 +152,28 @@ class MotorDriverNode(Node):
             self.get_logger().error(f"Failed in listener callback: {e}")
 
     def shutdown_motors(self):
-        '''Shutdown the motors'''
+        '''Shutdown the motors by transitioning through the CiA 402 Power State Machine.'''
         try:
-            self.get_logger().info('Shutting down motors2')
+            self.get_logger().info('Shutting down motors...')
             for node_id in self.network:
                 node = self.network[node_id]
-                node['Controlword'].phys = 0x0000
-            self.get_logger().info('Motors shutdown successfully')
+                # Send the "Shutdown" command (0x0006) to transition from "Operation Enabled" to "Ready to Switch On"
+                node.sdo['Controlword'].phys = 0x0006
+            self.get_logger().info("Sent 'Shutdown' command (0x0006) to all motors.")
+
+            # It's good practice to allow a moment for the state transition to occur.
+            # A more robust implementation would check the Statusword to confirm the state change.
+            
+            for node_id in self.network:
+                node = self.network[node_id]
+                # Send the "Disable Voltage" command (0x0000) to transition to "Switch on Disabled"
+                node.sdo['Controlword'].phys = 0x0000
+            self.get_logger().info("Sent 'Disable Voltage' command (0x0000) to all motors.")
+            
+            self.get_logger().info('Motor shutdown sequence complete.')
+
         except Exception as e:
-            self.get_logger().error(f"Failed to shutdown motors: {e}")
+            self.get_logger().error(f"Failed to properly shut down motors: {e}")
 
     def on_shutdown(self):
         '''Callback function for shutdown'''
@@ -166,8 +181,17 @@ class MotorDriverNode(Node):
         self.shutdown_motors()
         self.network.disconnect()
 
+def main(args=None):
+    rclpy.init(args=args)
+    motor_driver_node = MotorDriverNode()
+    try:
+        rclpy.spin(motor_driver_node)
+    except KeyboardInterrupt:
+        pass
+    finally:
+        motor_driver_node.on_shutdown()
+        motor_driver_node.destroy_node()
+        rclpy.shutdown()
 
 if __name__ == "__main__":
-    rclpy.init()
-    motor_driver_node = MotorDriverNode()
-    rclpy.spin(motor_driver_node)
+    main()

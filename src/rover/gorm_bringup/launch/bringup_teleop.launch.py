@@ -21,6 +21,13 @@ def generate_launch_description():
         output='screen'
     )
 
+    motor_driver_node = Node(
+        package='gorm_base_control',
+        executable='motor_driver_node',
+        name='motor_driver_node',
+        output='screen'
+    )
+
     # Joy node
     joy_node = Node(
         package='joy',
@@ -51,6 +58,7 @@ def generate_launch_description():
     ld.add_action(joy_node)
     ld.add_action(joy_to_cmd_vel_node)
     ld.add_action(ackermann_node)
+    ld.add_action(motor_driver_node)
     #ld.add_action(base_control_node)
 
     return ld
