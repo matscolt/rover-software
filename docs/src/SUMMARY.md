@@ -3,7 +3,12 @@
 
 # Getting Started
 - [Installation](<./getting_started/installation/installation.md>)
-- [Launching the Robot](<./getting_started/launching/launching.md>)
+- [Launching](<./getting_started/launching/launching.md>)
+  <!-- - [Rover Software Architecture](<./getting_started/architecture/architecture.md>) -->
+  <!-- - [Rover Software Components](<./getting_started/components/components.md>)
+  - [Rover Software Configuration](<./getting_started/configuration/configuration.md>)
+  - [Rover Software Launching](<./getting_started/launching/launching.md>)
+  - [Rover Software Debugging](<./getting_started/debugging/debugging.md>) -->
 - [Examples](<./getting_started/examples/examples.md>)
 
 # ROS2 Stack
