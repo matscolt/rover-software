@@ -6,10 +6,18 @@ def generate_launch_description():
     ld = LaunchDescription()
 
     # Teleop node (replacing ackermann_node)
-    teleop_node = Node(
-        package='gorm_teleop',
-        executable='teleop_twist_joy_node',
-        name='teleop_twist_joy_node',
+    # teleop_node = Node(
+    #     package='gorm_teleop',
+    #     executable='teleop_twist_joy_node',
+    #     name='teleop_twist_joy_node',
+    #     output='screen'
+    # )
+
+    # cmd_vel to motor commands converter
+    ackermann_node = Node(
+        package='gorm_base_control',
+        executable='ackermann_node',
+        name='ackermann_node',
         output='screen'
     )
 
@@ -23,24 +31,26 @@ def generate_launch_description():
     )
 
     # Joy to cmd_vel converter (if reimplemented in gorm_teleop)
-    joy_to_vel_node = Node(
+    joy_to_cmd_vel_node = Node(
         package='gorm_teleop',
-        executable='joy_to_cmd_vel.py',
-        name='joy_to_vel_converter',
+        executable='joy_to_cmd_vel_node',
+        name='joy_to_cmd_vel_node',
         output='screen'
     )
+
 
     # Base control node (node for 6-wheel, 4-steer kinematics)
-    base_control_node = Node(
-        package='gorm_base_control',
-        executable='gorm_base_control_node',
-        name='gorm_base_control_node',
-        output='screen'
-    )
+    # base_control_node = Node(
+    #     package='gorm_base_control',
+    #     executable='gorm_base_control_node',
+    #     name='gorm_base_control_node',
+    #     output='screen'
+    # )
 
-    ld.add_action(teleop_node)
+    #ld.add_action(teleop_node)
     ld.add_action(joy_node)
-    ld.add_action(joy_to_vel_node)
-    ld.add_action(base_control_node)
+    ld.add_action(joy_to_cmd_vel_node)
+    ld.add_action(ackermann_node)
+    #ld.add_action(base_control_node)
 
     return ld
