@@ -15,17 +15,23 @@ Here is a step-by-step guide to install the ROS2 Navigation Stack on the Rover.
      ```
 
 ## Installation Steps
-1. **Clone the Repository**: Clone the AAU Rover Software repository to the rover's computer.
+1. **Connect to the Rover**: SSH into the rover's computer using the following command:
+   ```bash
+   ssh gorm@192.168.0.2 # or ssh gorm@<ROVER_IP_ADDRESS>
+   ```
+   The default password is `gorm`.
+
+2. **Clone the Repository**: Clone the AAU Rover Software repository to the rover's computer.
    ```bash
     git clone https://github.com/aaU-Space-Robotics/rover-software/
     cd rover-software
     ```
-2. **Build & Run the Docker Images**: Navigate to the `docker` directory and build the Docker images.
+3. **Build & Run the Docker Images**: Navigate to the `docker` directory and build the Docker images.
     ```bash
     cd docker
     ./run.sh
     ```
-3. **Launch the Rover Software**: After the Docker images are built and running, you can attach to the running container and launch the rover software.
+4. **Launch the Rover Software**: After the Docker images are built and running, you can attach to the running container and launch the rover software.
     ```bash
     # Attach to the running Docker container
     docker exec -it rover-software bash

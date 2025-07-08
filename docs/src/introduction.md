@@ -2,7 +2,12 @@
 
 # AAU Rover Software Overview
 
-Welcome to the AAU Rover Software Overview. ....
+Welcome to the AAU Rover Software Overview, the rover consists of these main ROS 2 packages:
+- **`gorm_bringup`** - Main system launcher with robot state publisher and control nodes
+- **`gorm_base_control`** - Ackermann Kinematics interface for 6-wheel, 4-steer kinematics (`/cmd_vel` → `/motor commands`)
+- **`gorm_teleop`** - Manual control via joystick (`teleop_twist_joy_node`, `joy-to-cmd_vel converter`)
+- **`gorm_sensors`** - Sensor drivers for RGBD cameras, IMU, etc.
+
 ## Table of Contents
 
 - [**Installation**](./getting_started/installation/installation.md): Provides a step-by-step guide to install the AAU Rover Software on the Rover.
