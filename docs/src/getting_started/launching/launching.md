@@ -4,28 +4,26 @@
 
 ## Quick Start with Docker
 
-### 1. **Connect to the Rover**: SSH into the rover's computer using the following command:
-   ```bash
-   ssh gorm@192.168.0.2 # or ssh gorm@<ROVER_IP_ADDRESS>
-   ```
-   The default password is `gorm`.
+1. **Navigate to the Rover Software Directory**: Open a terminal and navigate to the directory where the rover software is located.
+    ```bash
+    cd /workspace/rover-software/docker
+    ```
+2. **Run the Docker Container and Attach to It**: Start the Docker container that contains the rover software and attach to it.
+    ```bash
+    ./run.sh
+    ./attach.sh
+    ```
+3. **Build the ROS2 Packages**: Inside the Docker container, build the ROS2 packages to ensure everything is set up correctly.
+    ```bash
+    colcon build
+    source install/setup.bash
+    ```
+4. **Launch the Rover Software**: Finally, launch the rover software using the provided launch file.
+    ```bash
+    ros2 launch gorm_bringup bringup_teleop.launch.py
+    ```
 
-### 2. Build and Run Container
-```bash
-cd docker
-./run.sh
-```
-This builds the container and starts it in detached mode with GPU support, device access, and networking.
-
-### 3. Attach to Container
-```bash
-./attach.sh
-```
-Opens an interactive bash session inside the `rover-software` container.
-
-### 4. Launch the System
-Inside the container, choose your launch mode:
-
+## Launching the GORM Rover
 **Full system bringup:**
 ```bash
 ros2 launch gorm_bringup bringup.launch.py
