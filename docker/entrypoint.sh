@@ -23,11 +23,22 @@ ip link set up can1
 
 # Add ROS 2 sourcing to bashrc so it's available in all new shells
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
-echo "alias run_base_system='cd /workspace && colcon build && source install/setup.bash && ros2 launch hardware ackermann.launch.py'" >> ~/.bashrc
+echo "source /home/zed_ros2_ws/install/setup.bash" >> ~/.bashrc
+echo "alias run='cd /workspace && colcon build && source install/setup.bash && ros2 launch gorm_bringup bringup_teleop.launch.py'" >> ~/.bashrc
 
 if [[ $1 == "autostart" ]]
 then
-	ros2 launch controller
+    # If the first argument is "autostart", run the controller launch file
+    echo "Running the teleop controller in autostart mode..."
+    
+    # Source the workspace setup file
+    source /home/zed_ros2_ws/install/setup.bash
+    
+    # Build the workspace
+    cd /workspace
+    colcon build
+    source install/setup.bash
+    ros2 launch gorm_bringup bringup_teleop.launch.py
 
 	bash
 
