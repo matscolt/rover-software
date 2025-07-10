@@ -24,9 +24,12 @@ ip link set up can1
 # Add ROS 2 sourcing to bashrc so it's available in all new shells
 echo "source /opt/ros/humble/setup.bash" >> ~/.bashrc
 echo "source /home/ros2_ws/install/setup.bash" >> ~/.bashrc
-echo "alias run='cd /home/workspace && colcon build && source install/setup.bash && ros2 launch gorm_bringup bringup_teleop.launch.py'" >> ~/.bashrc
+echo "alias bringup_teleop='cd /home/workspace && colcon build && source install/setup.bash && ros2 launch gorm_bringup bringup_teleop.launch.py'" >> ~/.bashrc
 echo "alias build='cd /home/workspace && colcon build && source install/setup.bash'" >> ~/.bashrc
 echo "alias camera='ros2 launch gorm_sensors cameras.launch.py'" >> ~/.bashrc
+echo "alias gps='ros2 launch ublox_gps ublox_gps_node_zedf9p-launch.py'" >> ~/.bashrc
+echo "alias bringup='ros2 launch gorm_bringup bringup.launch.py'" >> ~/.bashrc
+
 if [[ $1 == "autostart" ]]
 then
     # If the first argument is "autostart", run the controller launch file
