@@ -129,6 +129,34 @@ class MotorDriverNode(Node):
                     self.get_logger().info('Failed to set Controlword to 0x000F')
             else:
                 self.get_logger().info('Failed to set Controlword to 0x0007')
+        
+        # Send zero commands to all motors upon startup
+        self.send_zero_commands()
+    
+    def send_zero_commands(self):
+        '''Send zero velocity/position commands to all motors for safe startup'''
+        self.get_logger().info('Sending zero commands to all motors...')
+        success_count = 0
+        
+        for node_id in self.network:
+            try:
+                node = self.network[node_id]
+                if node_id < 7:  # Velocity motors (1-6)
+                    node.sdo['vl target velocity'].phys = 0
+                    self.get_logger().info(f'Sent zero velocity command to motor {node_id}')
+                else:  # Position motors (7-10)
+                    # For position motors, we set the target position to current position (0)
+                    node.sdo['Controlword'].bits[4] = 0
+                    node.sdo[0x607A].phys = 0  # Target position = 0
+                    node.sdo['Controlword'].bits[5] = 1
+                    node.sdo['Controlword'].bits[4] = 1
+                    self.get_logger().info(f'Sent zero position command to motor {node_id}')
+                
+                success_count += 1
+            except Exception as e:
+                self.get_logger().error(f"Failed to send zero command to motor {node_id}: {e}")
+        
+        self.get_logger().info(f'Zero commands sent to {success_count}/{len(self.network)} motors.')
     
 
     def listener_callback(self, msg: Float64MultiArray):
