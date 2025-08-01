@@ -75,6 +75,29 @@ class MotorDriverNode(Node):
         # rclpy.get_default_context().on_shutdown(self.on_shutdown)
         atexit.register(self.on_shutdown)
 
+    # =================================================================================
+    # ROS 2 Callbacks
+    # =================================================================================
+    def listener_callback(self, msg: Float64MultiArray):
+        '''Callback function for the subscriber'''
+        steering_scale = 1000
+        velocity_scale = 315 * 1/4
+        motor_commands = msg.data
+        try:
+            
+            for idx, node_id in enumerate(self.network):
+                node = self.network[node_id]
+                if node_id < 7:
+                    node.sdo['vl target velocity'].phys = motor_commands[idx] * velocity_scale
+                else:
+                    node.sdo['Controlword'].bits[4] = 0
+                    node.sdo[0x607A].phys = motor_commands[idx] * steering_scale
+                    node.sdo['Controlword'].bits[5] = 1
+                    node.sdo['Controlword'].bits[4] = 1
+
+        except Exception as e:
+            self.get_logger().error(f"Failed in listener callback: {e}")
+
     def start_motors_callback(self, request, response):
         '''Callback for the start_motors service'''
         self.get_logger().info("Service call to start motors...")
@@ -103,6 +126,15 @@ class MotorDriverNode(Node):
             self.get_logger().error(response.message)
         return response
 
+    def on_shutdown(self):
+        '''Callback function for shutdown'''
+        self.get_logger().info('Shutting down motors')
+        self.shutdown_motors()
+        self.network.disconnect()
+
+    # =================================================================================
+    # Setup & Configuration Methods
+    # =================================================================================
     def _initialize_motor_parameters(self):
         # Max linear and angular velocities
         self.max_linear_vel = 2000
@@ -151,6 +183,9 @@ class MotorDriverNode(Node):
                 node.sdo['Controlword'].phys = 0x0006
                 node.sdo[0x60A8].raw   = 0xFD100000
 
+    # =================================================================================
+    # Motor Control Methods
+    # =================================================================================
     def start_motors(self):
         for node_id in self.network:
             node = self.network[node_id]
@@ -217,32 +252,6 @@ class MotorDriverNode(Node):
         
         self.get_logger().info(f'Zero commands sent to {success_count}/{len(self.network)} motors.')
     
-
-    def listener_callback(self, msg: Float64MultiArray):
-        '''Callback function for the subscriber'''
-        steering_scale = 1000
-        velocity_scale = 315 * 1/4
-        motor_commands = msg.data
-        try:
-            
-            for idx, node_id in enumerate(self.network):
-                node = self.network[node_id]
-                if node_id < 7:
-                    node.sdo['vl target velocity'].phys = motor_commands[idx] * velocity_scale
-                else:
-                    node.sdo['Controlword'].bits[4] = 0
-                    node.sdo[0x607A].phys = motor_commands[idx] * steering_scale
-                    node.sdo['Controlword'].bits[5] = 1
-                    node.sdo['Controlword'].bits[4] = 1
-
-        except Exception as e:
-            self.get_logger().error(f"Failed in listener callback: {e}")
-
-    def on_shutdown(self):
-        '''Callback function for shutdown'''
-        self.get_logger().info('Shutting down motors')
-        self.shutdown_motors()
-        self.network.disconnect()
 
 def main(args=None):
     rclpy.init(args=args)
