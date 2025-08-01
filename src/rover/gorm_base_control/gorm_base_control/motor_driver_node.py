@@ -58,8 +58,8 @@ class MotorDriverNode(Node):
             self.listener_callback,
             10)
 
-        self.startup_motors()
-        self.startup_motors2()
+        self.configure_motor_settings()
+        self.start_motors()
 
         # Register shutdown callback
         # rclpy.get_default_context().on_shutdown(self.on_shutdown)
@@ -81,7 +81,7 @@ class MotorDriverNode(Node):
         # EDS path
         self.eds_path = 'install/gorm_base_control/share/gorm_base_control/config/C5-E-2-09.eds'
 
-    def startup_motors(self):
+    def configure_motor_settings(self):
         # Set up velocity motors settings
         for node_id in self.network:
             node = self.network[node_id]
@@ -113,7 +113,7 @@ class MotorDriverNode(Node):
                 node.sdo['Controlword'].phys = 0x0006
                 node.sdo[0x60A8].raw   = 0xFD100000
 
-    def startup_motors2(self):
+    def start_motors(self):
         for node_id in self.network:
             node = self.network[node_id]
             node.sdo['Controlword'].phys = 0x0006 # 0110, 
@@ -132,6 +132,27 @@ class MotorDriverNode(Node):
         
         # Send zero commands to all motors upon startup
         self.send_zero_commands()
+    
+    def shutdown_motors(self):
+        '''Shutdown the motors by transitioning through the CiA 402 Power State Machine.'''
+        try:
+            self.get_logger().info('Shutting down motors...')
+            for node_id in self.network:
+                node = self.network[node_id]
+                # Send the "Shutdown" command (0x0006) to transition from "Operation Enabled" to "Ready to Switch On"
+                node.sdo['Controlword'].phys = 0x0006
+            self.get_logger().info("Sent 'Shutdown' command (0x0006) to all motors.")
+
+            for node_id in self.network:
+                node = self.network[node_id]
+                # Send the "Disable Voltage" command (0x0000) to transition to "Switch on Disabled"
+                node.sdo['Controlword'].phys = 0x0000
+            self.get_logger().info("Sent 'Disable Voltage' command (0x0000) to all motors.")
+            
+            self.get_logger().info('Motor shutdown sequence complete.')
+
+        except Exception as e:
+            self.get_logger().error(f"Failed to properly shut down motors: {e}")
     
     def send_zero_commands(self):
         '''Send zero velocity/position commands to all motors for safe startup'''
@@ -178,27 +199,6 @@ class MotorDriverNode(Node):
 
         except Exception as e:
             self.get_logger().error(f"Failed in listener callback: {e}")
-
-    def shutdown_motors(self):
-        '''Shutdown the motors by transitioning through the CiA 402 Power State Machine.'''
-        try:
-            self.get_logger().info('Shutting down motors...')
-            for node_id in self.network:
-                node = self.network[node_id]
-                # Send the "Shutdown" command (0x0006) to transition from "Operation Enabled" to "Ready to Switch On"
-                node.sdo['Controlword'].phys = 0x0006
-            self.get_logger().info("Sent 'Shutdown' command (0x0006) to all motors.")
-
-            for node_id in self.network:
-                node = self.network[node_id]
-                # Send the "Disable Voltage" command (0x0000) to transition to "Switch on Disabled"
-                node.sdo['Controlword'].phys = 0x0000
-            self.get_logger().info("Sent 'Disable Voltage' command (0x0000) to all motors.")
-            
-            self.get_logger().info('Motor shutdown sequence complete.')
-
-        except Exception as e:
-            self.get_logger().error(f"Failed to properly shut down motors: {e}")
 
     def on_shutdown(self):
         '''Callback function for shutdown'''
