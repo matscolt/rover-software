@@ -63,5 +63,5 @@ def generate_launch_description():
 
     ld.add_action(static_tf_node)
     ld.add_action(zed_tracking)
-    #ld.add_action(zed_front)
+    ld.add_action(zed_front)
     return ld

@@ -283,6 +283,7 @@ class GormRLNavigationNode(Node):
             # Log occasionally for debugging
             if self.get_clock().now().nanoseconds % 2000000000 < 200000000:  # Every ~2 seconds
                 self.get_logger().info(f"RL Action: linear={action[0]:.3f}, angular={action[1]:.3f}")
+                self.get_logger().info(f"Distance: {observations[:,2]}")
         
         except Exception as e:
             self.get_logger().error(f"Inference failed: {e}")
