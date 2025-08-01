@@ -9,6 +9,7 @@ import atexit
 from rclpy.node import Node
 from geometry_msgs.msg import Twist
 from std_msgs.msg import Float64MultiArray
+from std_srvs.srv import Trigger
 
 ## Constants
 
@@ -34,7 +35,7 @@ class MotorDriverNode(Node):
 
     def __init__(self):
         super().__init__('motor_driver_node')
-        self.init_settings()
+        self._initialize_motor_parameters()
         # Initialize can network
         self.network = canopen.Network()
         self.network.connect(channel='can1', bustype='socketcan')
@@ -58,6 +59,15 @@ class MotorDriverNode(Node):
             self.listener_callback,
             10)
 
+        self.start_motors_service = self.create_service(
+            Trigger,
+            'start_motors',
+            self.start_motors_callback)
+        self.shutdown_motors_service = self.create_service(
+            Trigger,
+            'shutdown_motors',
+            self.shutdown_motors_callback)
+
         self.configure_motor_settings()
         self.start_motors()
 
@@ -65,7 +75,35 @@ class MotorDriverNode(Node):
         # rclpy.get_default_context().on_shutdown(self.on_shutdown)
         atexit.register(self.on_shutdown)
 
-    def init_settings(self):
+    def start_motors_callback(self, request, response):
+        '''Callback for the start_motors service'''
+        self.get_logger().info("Service call to start motors...")
+        try:
+            self.start_motors()
+            response.success = True
+            response.message = "Motors started successfully."
+            self.get_logger().info(response.message)
+        except Exception as e:
+            response.success = False
+            response.message = f"Failed to start motors: {e}"
+            self.get_logger().error(response.message)
+        return response
+
+    def shutdown_motors_callback(self, request, response):
+        '''Callback for the shutdown_motors service'''
+        self.get_logger().info("Service call to stop motors...")
+        try:
+            self.shutdown_motors()
+            response.success = True
+            response.message = "Motors stopped successfully."
+            self.get_logger().info(response.message)
+        except Exception as e:
+            response.success = False
+            response.message = f"Failed to stop motors: {e}"
+            self.get_logger().error(response.message)
+        return response
+
+    def _initialize_motor_parameters(self):
         # Max linear and angular velocities
         self.max_linear_vel = 2000
         self.max_angular_vel = 400
