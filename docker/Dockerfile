@@ -182,7 +182,7 @@ RUN pip3 install tritonclient[all]
 ###         Install EXTRAS       ###
 #####################################
 
-RUN apt-get install -y ros-humble-rosbridge-server
+RUN apt-get update && apt-get install -y ros-humble-rosbridge-server
 
 #####################################
 ###       Entrypoint script       ###
