@@ -189,7 +189,7 @@ RUN apt-get update && apt-get install -y ros-humble-rosbridge-server
 RUN mkdir -p /home/workspace
 
 # Copy the source code
-COPY ../src /home/workspace/src
+COPY ./src /home/workspace/src
 
 # Set working directory
 WORKDIR /home/workspace
@@ -212,7 +212,7 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
 ###       Entrypoint script       ###
 #####################################
 
-COPY entrypoint.deploy.sh /entrypoint.sh
+COPY docker/entrypoint.deploy.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]

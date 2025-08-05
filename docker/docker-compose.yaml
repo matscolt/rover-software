@@ -50,8 +50,8 @@ services:
     
   rover-deploy:
     build:
-      context: .
-      dockerfile: Dockerfile.deploy
+      context: ..
+      dockerfile: docker/Dockerfile.deploy
       args:
         L4T_VERSION_MAJOR: 36 # jetpack version 36.4.0 
         L4T_VERSION_MINOR: 4

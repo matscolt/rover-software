@@ -14,7 +14,7 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
 # Build the deployment image
-docker-compose build rover-deploy
+docker compose --file docker-compose.yaml build rover-deploy
 
 echo "✅ Rover deployment image built successfully!"
 echo ""
