@@ -175,6 +175,12 @@ RUN apt-get install busybox && apt-get install iproute2 -y && \
 
 RUN pip3 install tritonclient[all]
 
+#####################################
+###         Install EXTRAS       ###
+#####################################
+
+RUN apt-get install -y ros-humble-rosbridge-server
+
 ###################################
 ###    Copy and Build Rover SW   ###
 ###################################
