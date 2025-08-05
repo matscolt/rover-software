@@ -1,8 +1,8 @@
 # Launching the GORM Rover
 
+The GORM rover can be launched in two modes: **development mode** (for active development) and **production mode** (for deployment). This guide covers the development mode. For production deployment, see the [Deployment Guide](../../deployment/overview.md).
 
-
-## Quick Start with Docker
+## Quick Start with Docker (Development Mode)
 
 1. **Navigate to the Rover Software Directory**: Open a terminal and navigate to the directory where the rover software is located.
     ```bash
@@ -22,6 +22,8 @@
     ```bash
     ros2 launch gorm_bringup bringup_teleop.launch.py
     ```
+
+> **💡 Production Alternative**: For production deployment with automatic restart and pre-built packages, use `docker-compose up -d rover-deploy`. See the [Production Deployment Guide](../../deployment/production.md) for details.
 
 ## Launching the GORM Rover
 **Full system bringup:**

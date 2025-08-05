@@ -31,6 +31,9 @@ Here is a step-by-step guide to install the ROS2 Navigation Stack on the Rover.
     cd docker
     ./run.sh
     ```
+
+    > **💡 Production Deployment**: For production deployment with auto-restart capabilities, see the [Deployment Guide](../../deployment/overview.md) which provides a pre-built image that doesn't require manual building inside the container.
+
 4. **Launch the Rover Software**: After the Docker images are built and running, you can attach to the running container and launch the rover software.
     ```bash
     # Attach to the running Docker container
