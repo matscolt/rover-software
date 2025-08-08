@@ -15,9 +15,9 @@ print_usage() {
     echo "  --help, -h        Show this help message"
     echo ""
     echo "EXAMPLES:"
-    echo "  $0                        # Development mode"
-    echo "  $0 dev --triton           # Development mode + triton"
+    echo "  $0 dev                    # Development mode"
     echo "  $0 deploy                 # Production mode"
+    echo "  $0 dev --triton           # Development mode + triton"
     echo "  $0 deploy --triton        # Production mode + triton"
 }
 
