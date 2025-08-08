@@ -101,7 +101,7 @@ RUN python3 /usr/local/zed/get_python_api.py
 RUN ln -sf /usr/lib/aarch64-linux-gnu/tegra/libv4l2.so.0 /usr/lib/aarch64-linux-gnu/libv4l2.so
 
 #####################################
-###        ZED ROS2 Wrapper       ###
+###   ZED and UBlox ROS2 Wrapper  ###
 #####################################
 
 # ZED ROS2 Wrapper dependencies version
@@ -118,16 +118,16 @@ ARG POINTCLOUD_TRANSPORT_PLUGINS_VERSION=1.0.11
 ARG RMW_CYCLONEDDS_VERSION=1.3.4
 ARG BACKWARD_ROS_VERSION=1.0.7
 
-ARG ZED_ROS2_WRAPPER_FOLDER
+ARG ROS2_WRAPPER_FOLDER
 ARG ZED_ROS2_WRAPPER_BRANCH
 ARG ZED_ROS2_WRAPPER_URL
 
-RUN apt-get update && apt-get install -y git python3-colcon-common-extensions lsb-release wget less udev sudo build-essential cmake python3 python3-dev python3-pip python3-wheel git jq libpq-dev zstd usbutils python3-rosdep
-RUN mkdir -p ${ZED_ROS2_WRAPPER_FOLDER}/src && \
-   git clone --recurse-submodule --branch ${ZED_ROS2_WRAPPER_BRANCH} ${ZED_ROS2_WRAPPER_URL} ${ZED_ROS2_WRAPPER_FOLDER}/src
+RUN apt-get update && apt-get install -y git python3-colcon-common-extensions lsb-release wget less udev sudo build-essential cmake python3 python3-dev python3-pip python3-wheel git jq libpq-dev zstd usbutils python3-rosdep libasio-dev
+RUN mkdir -p ${ROS2_WRAPPER_FOLDER}/src && \
+   git clone --recurse-submodule --branch ${ZED_ROS2_WRAPPER_BRANCH} ${ZED_ROS2_WRAPPER_URL} ${ROS2_WRAPPER_FOLDER}/src
 
 
-WORKDIR ${ZED_ROS2_WRAPPER_FOLDER}/src
+WORKDIR ${ROS2_WRAPPER_FOLDER}/src
 RUN wget https://github.com/ros/xacro/archive/refs/tags/${XACRO_VERSION}.tar.gz -O - | tar -xvz && mv xacro-${XACRO_VERSION} xacro && \
     wget https://github.com/ros/diagnostics/archive/refs/tags/${DIAGNOSTICS_VERSION}.tar.gz -O - | tar -xvz && mv diagnostics-${DIAGNOSTICS_VERSION} diagnostics && \
     wget https://github.com/ament/ament_lint/archive/refs/tags/${AMENT_LINT_VERSION}.tar.gz -O - | tar -xvz && mv ament_lint-${AMENT_LINT_VERSION} ament-lint && \
@@ -145,7 +145,10 @@ RUN wget https://github.com/ros/xacro/archive/refs/tags/${XACRO_VERSION}.tar.gz 
 
 RUN python3 -m pip install --upgrade cython
 
-WORKDIR ${ZED_ROS2_WRAPPER_FOLDER}
+# Clone the ublox-zedf9p repository for ublox zed f9p support
+RUN git clone --branch master https://github.com/AAU-Space-Robotics/ros2-ublox-zedf9p.git
+
+WORKDIR ${ROS2_WRAPPER_FOLDER}
 
 RUN rosdep init && \
     rosdep update && \
@@ -158,6 +161,7 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
   ' -DCMAKE_LIBRARY_PATH=/usr/local/cuda/lib64/stubs' \
   ' -DCMAKE_CXX_FLAGS="-Wl,--allow-shlib-undefined"' \
   ' --no-warn-unused-cli' "
+
 
 ###################################
 ###         pip packages         ###
@@ -178,6 +182,7 @@ RUN pip3 install tritonclient[all]
 ###         Install EXTRAS       ###
 #####################################
 
+RUN apt-get update && apt-get install -y ros-humble-rosbridge-server
 
 #####################################
 ###       Entrypoint script       ###

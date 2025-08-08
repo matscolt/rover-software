@@ -1,0 +1,22 @@
+name: "IQL_depth_224_224"
+platform: "onnxruntime_onnx"
+max_batch_size: 0
+input [
+  {
+    name: "proprioceptive"
+    data_type: TYPE_FP32
+    dims: [ -1, 5 ]
+  },
+  {
+    name: "image"
+    data_type: TYPE_FP32
+    dims: [ -1, 1, 224, 224 ]
+  }
+]
+output [
+  {
+    name: "action"
+    data_type: TYPE_FP32
+    dims: [ -1, 2 ]
+  }
+]

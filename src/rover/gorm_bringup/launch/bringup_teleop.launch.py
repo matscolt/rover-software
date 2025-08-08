@@ -1,6 +1,10 @@
 
 from launch import LaunchDescription
 from launch_ros.actions import Node
+from launch.actions import IncludeLaunchDescription
+from launch.launch_description_sources import PythonLaunchDescriptionSource
+from ament_index_python.packages import get_package_share_directory
+import os
 
 def generate_launch_description():
     ld = LaunchDescription()
@@ -37,9 +41,18 @@ def generate_launch_description():
         output='screen'
     )
 
+    # Web interface (includes rosbridge and web server)
+    web_interface = IncludeLaunchDescription(
+        PythonLaunchDescriptionSource([
+            os.path.join(get_package_share_directory('gorm_web_interface'), 'launch'),
+            '/web_interface.launch.py'
+        ])
+    )
+
     ld.add_action(joy_node)
     ld.add_action(joy_to_cmd_vel_node)
     ld.add_action(ackermann_node)
     ld.add_action(motor_driver_node)
+    ld.add_action(web_interface)
 
     return ld

@@ -4,12 +4,13 @@
 # Getting Started
 - [Installation](<./getting_started/installation/installation.md>)
 - [Launching](<./getting_started/launching/launching.md>)
-  <!-- - [Rover Software Architecture](<./getting_started/architecture/architecture.md>) -->
-  <!-- - [Rover Software Components](<./getting_started/components/components.md>)
-  - [Rover Software Configuration](<./getting_started/configuration/configuration.md>)
-  - [Rover Software Launching](<./getting_started/launching/launching.md>)
-  - [Rover Software Debugging](<./getting_started/debugging/debugging.md>) -->
 - [Examples](<./getting_started/examples/examples.md>)
+
+# Deployment
+- [Deployment Overview](<./deployment/overview.md>)
+- [Development vs Production](<./deployment/development-vs-production.md>)
+- [Building Deployment Image](<./deployment/building.md>)
+- [Running in Production](<./deployment/production.md>)
 
 # ROS2 Stack
 - [Navigation](<>)

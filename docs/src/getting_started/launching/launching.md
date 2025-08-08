@@ -1,6 +1,8 @@
-# Launching the Software
-In order to launch the rover software, you need to follow these steps:
+# Launching the GORM Rover
 
+The GORM rover can be launched in two modes: **development mode** (for active development) and **production mode** (for deployment). This guide covers the development mode. For production deployment, see the [Deployment Guide](../../deployment/overview.md).
+
+## Quick Start with Docker (Development Mode)
 
 1. **Navigate to the Rover Software Directory**: Open a terminal and navigate to the directory where the rover software is located.
     ```bash
@@ -20,3 +22,34 @@ In order to launch the rover software, you need to follow these steps:
     ```bash
     ros2 launch gorm_bringup bringup_teleop.launch.py
     ```
+
+> **💡 Production Alternative**: For production deployment with automatic restart and pre-built packages, use `docker-compose up -d rover-deploy`. See the [Production Deployment Guide](../../deployment/production.md) for details.
+
+## Launching the GORM Rover
+**Full system bringup:**
+```bash
+ros2 launch gorm_bringup bringup.launch.py
+```
+
+**Teleop mode (manual control):**
+```bash
+ros2 launch gorm_bringup bringup_teleop.launch.py
+```
+
+**Individual components:**
+```bash
+# Motors only
+ros2 launch gorm_base_control motor_driver.launch.py
+
+# Cameras only  
+ros2 launch gorm_sensors cameras.launch.py
+
+# Joystick control only
+ros2 launch gorm_teleop teleop.launch.py
+```
+
+## Key Topics
+
+- `/cmd_vel` - Velocity commands (geometry_msgs/Twist)
+- `/odom` - Odometry feedback (nav_msgs/Odometry)  
+- `/joy` - Joystick input
