@@ -19,6 +19,10 @@ services:
       - ../src:/home/workspace/src
       - /tmp/argus_socket:/tmp/argus_socket
       - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
+      - /dev/:/dev/
+      - /usr/local/zed/resources/:/usr/local/zed/resources/
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+      - /dev/shm:/dev/shm
     working_dir: /home/workspace
     stdin_open: true
     tty: true
@@ -53,6 +57,10 @@ services:
     volumes:
       - /tmp/argus_socket:/tmp/argus_socket
       - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
+      - /dev/:/dev/
+      - /usr/local/zed/resources/:/usr/local/zed/resources/
+      - /tmp/.X11-unix/:/tmp/.X11-unix
+      - /dev/shm:/dev/shm
     working_dir: /home/workspace
     environment:
       - ROS_DOMAIN_ID=0
