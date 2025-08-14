@@ -59,6 +59,7 @@ services:
       - /lib/modules/5.15.148-tegra:/lib/modules/5.15.148-tegra
       - /dev/:/dev/
       - /usr/local/zed/resources/:/usr/local/zed/resources/
+      - /usr/local/zed/settings:/usr/local/zed/settings
       - /tmp/.X11-unix/:/tmp/.X11-unix
       - /dev/shm:/dev/shm
     working_dir: /home/workspace
