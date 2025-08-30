@@ -80,6 +80,7 @@ class JoyToVelNode(Node):
             return 0.8
         if msg.buttons[3]==1:
             return 0.5
+        return self.speed_multi
 
     def circle_to_square(self, x, y):
         # Ensure the point (x, y) lies within the unit circle
