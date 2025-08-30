@@ -46,17 +46,19 @@ class JoyToVelNode(Node):
         linear_vel, angular_vel = self.circle_to_square(linear_vel, angular_vel)
 
         # Turn on point
-        if right_stick_x>0:
+        if right_stick_x>0.01:
             # Create and publish the message
             twist = Twist()
-            twist.linear.x = linear_vel*self.speed_multi
-            twist.angular.z = angular_vel*self.speed_multi
+            twist.angular.z = right_stick_x*self.speed_multi
+            twist.angular.x = right_stick_x*self.speed_multi
+            
 
             self.publisher_.publish(twist)
         else:
             # Create and publish the message
             twist = Twist()
-            twist.angular.z = right_stick_x*self.speed_multi
+            twist.linear.x = linear_vel*self.speed_multi
+            twist.angular.z = angular_vel*self.speed_multi
 
             self.publisher_.publish(twist)
 
