@@ -195,7 +195,7 @@ COPY ./src /home/workspace/src
 WORKDIR /home/workspace
 
 # Install dependencies for the rover software
-RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
+RUN /bin/bash -c "apt-get update && source /opt/ros/humble/setup.bash && \
     source ${ROS2_WRAPPER_FOLDER}/install/setup.bash && \
     rosdep update && \
     rosdep install --from-paths src --ignore-src -r -y --rosdistro humble"
