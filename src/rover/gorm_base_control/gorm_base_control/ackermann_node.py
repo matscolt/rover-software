@@ -59,7 +59,6 @@ class AckermannNode(Node):
         Turn the vehicle on the spot (pure rotation).
         Returns steering angles and wheel velocities.
         """
-        direction = -1 if lin_vel < 0 else 1
         turn_direction = -1 if ang_vel < 0 else 1
 
         # Steering angles (wheels at max deflection)
