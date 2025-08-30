@@ -36,7 +36,7 @@ class AckermannNode(Node):
         linear_vel = msg.linear.x
         angular_vel = msg.angular.z
 
-        if msg.angular.x > 0:
+        if abs(msg.angular.x) > 0:
             steering_angles, wheel_velocities = self.turn_on_spot(angular_vel)
         else:
             # Your Ackermann function here, assume it returns steering_angles and wheel_velocities
@@ -54,7 +54,7 @@ class AckermannNode(Node):
             
 
 
-    def turn_on_spot(ang_vel, wheel_radius=0.12, d_lr=0.894, d_fr=0.77, L=0.849, offset=-0.0135):
+    def turn_on_spot(self, ang_vel, wheel_radius=0.12, d_lr=0.894, d_fr=0.77, L=0.849, offset=-0.0135):
         """
         Turn the vehicle on the spot (pure rotation).
         Returns steering angles and wheel velocities.
