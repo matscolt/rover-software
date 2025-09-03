@@ -17,10 +17,10 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='GORM Team',
-    maintainer_email='todo@todo.com',
-    description='Web interface for GORM rover motor control and monitoring',
-    license='TODO: License declaration',
+    maintainer='Anton Bjørndahl Mortensen',
+    maintainer_email='antonbm2008@gmail.com',
+    description='ROS 2 package providing a web interface for monitoring and controlling the GORM rover.',
+    license='GNU Affero General Public License v3',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [

@@ -23,11 +23,11 @@ setup(
     ],
     install_requires=['setuptools'],
     zip_safe=True,
-    maintainer='gorm',
+    maintainer='Anton Bjørndahl Mortensen',
     maintainer_email='antonbm2008@gmail.com',
     description='Navigation package for GORM rover including RL-based autonomous navigation',
-    license='MIT',
     tests_require=['pytest'],
+    license='GNU Affero General Public License v3',
     entry_points={
         'console_scripts': [
             'rl_navigation_node = gorm_navigation.rl_navigation_node:main',

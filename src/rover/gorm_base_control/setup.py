@@ -19,8 +19,8 @@ setup(
     zip_safe=True,
     maintainer='Anton Bjørndahl Mortensen',
     maintainer_email='antonbm2008@gmail.com',
-    description='The gorm_base_control package',
-    license='TODO: License declaration',
+    description='ROS 2 package for 6-wheel, 4-steer rover base control. Converts velocity commands to motor commands and publishes odometry.',
+    license='GNU Affero General Public License v3',
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
