@@ -26,6 +26,7 @@ class JoyToVelNode(Node):
         
         self.linear_vel = 0.0
         self.angular_vel = 0.0
+        self.speed_multi = 1
 
         self.get_logger().info("Joy to vel converter node started successfully")
 
@@ -35,16 +36,33 @@ class JoyToVelNode(Node):
         
         linear_vel = msg.axes[1] # Left stick up/down
         angular_vel = msg.axes[0] # Left stick left/right
+        right_stick_x = msg.axes[3] # right stick left/right
+
+
+        self.speed_multi = self.check_ABXY_pressed(msg)
+   
 
         # Strech the circle to a square
         linear_vel, angular_vel = self.circle_to_square(linear_vel, angular_vel)
 
-        # Create and publish the message
-        twist = Twist()
-        twist.linear.x = linear_vel
-        twist.angular.z = angular_vel
+        # Turn on point
+        if abs(right_stick_x)>0.0001:
+            # Create and publish the message
+            twist = Twist()
+            twist.angular.z = right_stick_x*self.speed_multi*4
+            twist.angular.x = right_stick_x*self.speed_multi*4
+            
 
-        self.publisher_.publish(twist)
+            self.publisher_.publish(twist)
+        else:
+            # Create and publish the message
+            twist = Twist()
+            twist.linear.x = linear_vel*self.speed_multi
+            twist.angular.z = angular_vel*self.speed_multi
+
+            self.publisher_.publish(twist)
+
+
 
         # If Y button is pressed, stop the robot
         # TODO - Implement a service that stop the robot over can bus
@@ -53,6 +71,18 @@ class JoyToVelNode(Node):
         #     twist.linear.x = 0
         #     twist.angular.z = 0
         #     self.publisher_.publish(twist)
+
+
+    def check_ABXY_pressed(self, msg):
+        if msg.buttons[0]==1:
+            return 1.0
+        if msg.buttons[1]==1:
+            return 0.3
+        if msg.buttons[2]==1:
+            return 0.8
+        if msg.buttons[3]==1:
+            return 0.5
+        return self.speed_multi
 
     def circle_to_square(self, x, y):
         # Ensure the point (x, y) lies within the unit circle
