@@ -1,9 +1,17 @@
+# Multi-stage Dockerfile for Rover Software
+# Base stage contains all common dependencies and setup
+# Development and production stages extend from base with specific configurations
+
 ARG L4T_VERSION_MAJOR
 ARG L4T_VERSION_MINOR
 ARG L4T_VERSION_PATCH
 ARG L4T_VERSION=${L4T_VERSION_MAJOR}.${L4T_VERSION_MINOR}.${L4T_VERSION_PATCH}
 
-FROM nvcr.io/nvidia/l4t-jetpack:r${L4T_VERSION}
+#####################################
+###         BASE STAGE            ###
+#####################################
+
+FROM nvcr.io/nvidia/l4t-jetpack:r${L4T_VERSION} AS base
 
 # Avoid prompts with apt-get
 ARG DEBIAN_FRONTEND=noninteractive
@@ -126,7 +134,6 @@ RUN apt-get update && apt-get install -y git python3-colcon-common-extensions ls
 RUN mkdir -p ${ROS2_WRAPPER_FOLDER}/src && \
    git clone --recurse-submodule --branch ${ZED_ROS2_WRAPPER_BRANCH} ${ZED_ROS2_WRAPPER_URL} ${ROS2_WRAPPER_FOLDER}/src
 
-
 WORKDIR ${ROS2_WRAPPER_FOLDER}/src
 RUN wget https://github.com/ros/xacro/archive/refs/tags/${XACRO_VERSION}.tar.gz -O - | tar -xvz && mv xacro-${XACRO_VERSION} xacro && \
     wget https://github.com/ros/diagnostics/archive/refs/tags/${DIAGNOSTICS_VERSION}.tar.gz -O - | tar -xvz && mv diagnostics-${DIAGNOSTICS_VERSION} diagnostics && \
@@ -162,7 +169,6 @@ RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
   ' -DCMAKE_CXX_FLAGS="-Wl,--allow-shlib-undefined"' \
   ' --no-warn-unused-cli' "
 
-
 ###################################
 ###         pip packages         ###
 ###################################
@@ -176,20 +182,63 @@ RUN apt-get install busybox && apt-get install iproute2 -y && \
 
 RUN pip3 install tritonclient[all]
 
-
-
 #####################################
 ###         Install EXTRAS       ###
 #####################################
 
 RUN apt-get update && apt-get install -y ros-humble-rosbridge-server
 
+# Clean up
+RUN rm -rf /var/lib/apt/lists/*
+
 #####################################
-###       Entrypoint script       ###
+###      DEVELOPMENT STAGE        ###
 #####################################
 
+FROM base AS development
+
+# Copy unified entrypoint script
 COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 ENTRYPOINT ["/entrypoint.sh"]
-RUN rm -rf /var/lib/apt/lists/*
+
+#####################################
+###      PRODUCTION STAGE         ###
+#####################################
+
+FROM base AS production
+
+###################################
+###    Copy and Build Rover SW   ###
+###################################
+
+# Create workspace directory
+RUN mkdir -p /home/workspace
+
+# Copy the source code
+COPY ./src /home/workspace/src
+
+# Set working directory
+WORKDIR /home/workspace
+
+# Install dependencies for the rover software
+RUN /bin/bash -c "apt-get update && \
+    source /opt/ros/humble/setup.bash && \
+    source ${ROS2_WRAPPER_FOLDER}/install/setup.bash && \
+    rosdep update && \
+    rosdep install --from-paths src --ignore-src -r -y --rosdistro humble"
+
+# Build the rover software
+RUN /bin/bash -c "source /opt/ros/humble/setup.bash && \
+    source ${ROS2_WRAPPER_FOLDER}/install/setup.bash && \
+    colcon build --parallel-workers $(nproc) \
+    --event-handlers console_direct+ \
+    --cmake-args ' -DCMAKE_BUILD_TYPE=Release' \
+    ' --no-warn-unused-cli'"
+
+# Copy unified entrypoint script
+COPY docker/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]
