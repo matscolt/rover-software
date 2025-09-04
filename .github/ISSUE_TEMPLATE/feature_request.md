@@ -21,11 +21,5 @@ assignees: ''
 - [ ] Task 3 (e.g., testing/validation)
 - [ ] Task 4 (e.g., update documentation)
 
-## Acceptance Criteria
-<!-- Define what needs to be true for this feature to be considered complete -->
-- [ ] Criterion 1
-- [ ] Criterion 2
-- [ ] Criterion 3
-
 ## Why
 <!-- Explain why this feature is important and the benefits it will bring -->
