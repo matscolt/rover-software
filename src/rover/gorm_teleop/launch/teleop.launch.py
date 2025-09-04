@@ -19,6 +19,6 @@ def generate_launch_description():
     )
 
     ld.add_action(joy_to_cmd_vel_node)
-    #ld.add_action(joy_node)
+    ld.add_action(joy_node)
 
     return ld
