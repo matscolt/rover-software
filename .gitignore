@@ -58,3 +58,5 @@ overlay_ws/
 
 # Ignore generated HTML
 **/00Tree.html
+
+**rosbag**
