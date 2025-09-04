@@ -59,4 +59,4 @@ overlay_ws/
 # Ignore generated HTML
 **/00Tree.html
 
-src/rosbag2**
+src/rosbag**
