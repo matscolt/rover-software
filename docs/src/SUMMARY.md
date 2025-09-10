@@ -9,8 +9,6 @@
 # Deployment
 - [Deployment Overview](<./deployment/overview.md>)
 - [Development vs Production](<./deployment/development-vs-production.md>)
-- [Building Deployment Image](<./deployment/building.md>)
-- [Running in Production](<./deployment/production.md>)
 
 # ROS2 Stack
 - [Navigation](<>)
