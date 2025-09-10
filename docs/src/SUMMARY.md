@@ -2,7 +2,7 @@
 - [Overview](./introduction.md)
 
 # Getting Started
-- [Installation](<./getting_started/installation/installation.md>)
+- [Installation (OS Reinstall)](<./getting_started/installation/installation.md>)
 - [Launching](<./getting_started/launching/launching.md>)
 - [Examples](<./getting_started/examples/examples.md>)
 
