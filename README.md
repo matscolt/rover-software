@@ -58,7 +58,7 @@ Notes:
 To access the rover directly (outside Docker), SSH to the rover's IP. The username and IP may vary; example below is for an onboard user account commonly used in our docs:
 
 ```bash
-ssh gorm@192.168.50.100 # Default IP for the rover is 192.168.0.100
+ssh gorm@192.168.50.100 # Default IP for the rover is 192.168.50.100
 ```
 
 Confirm the correct username and password for your hardware image before connecting.
