@@ -81,7 +81,7 @@ def main2():
     window_width, window_height = work_area[2], work_area[3]
  
     # Create a windowed window (not fullscreen)
-    window = glfw.create_window(window_width, window_height, "Minesweeper", None, None)
+    window = glfw.create_window(window_width, window_height, "Rover Gui", None, None)
     if not window:
         glfw.terminate()
         print("Could not create window")
