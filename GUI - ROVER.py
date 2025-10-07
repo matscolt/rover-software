@@ -1,18 +1,19 @@
 import imgui
 from imgui.integrations.glfw import GlfwRenderer
 import glfw
+import OpenGL.GL as gl
 
 
 def main():
-if not glfw.init():
-    raise Exception("Could not initialize GLFW")
-print("GLFW initialized")
+    if not glfw.init():
+        raise Exception("Could not initialize GLFW")
+    print("GLFW initialized")
 
-window = glfw.create_window(600, 400, "Project 0", None, None)
-if not window:
-    glfw.terminate()
-    raise Exception("Could not create GLFW window")
-print("Window created successfully")
+    window = glfw.create_window(600, 400, "Project 0", None, None)
+    if not window:
+        glfw.terminate()
+        raise Exception("Could not create GLFW window")
+    print("Window created successfully")
 
     glfw.set_input_mode(window, glfw.STICKY_KEYS, glfw.TRUE)
     glfw.make_context_current(window)
@@ -63,11 +64,6 @@ print("Window created successfully")
 
     impl.shutdown()
     glfw.terminate()
-
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
-import glfw
-import OpenGL.GL as gl
 
 # Lav funktioner
  
