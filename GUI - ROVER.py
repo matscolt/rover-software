@@ -4,14 +4,17 @@ import glfw
 
 
 def main():
-    if not glfw.init():
-        
-        raise Exception("Could not initialize GLFW")
+if not glfw.init():
+    raise Exception("Could not initialize GLFW")
+print("GLFW initialized")
 
-    window = glfw.create_window(600, 400, "Project 0", None, None)
-    if not window:
-        glfw.terminate()
-        raise Exception("Could not create GLFW window")
+window = glfw.create_window(600, 400, "Project 0", None, None)
+if not window:
+    glfw.terminate()
+    raise Exception("Could not create GLFW window")
+print("Window created successfully")
+
+    glfw.set_input_mode(window, glfw.STICKY_KEYS, glfw.TRUE)
     glfw.make_context_current(window)
 
     imgui.create_context()
