@@ -70,7 +70,34 @@ def main():
         # Clear the screen
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)  # Dark background
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
- 
+
+        button_label = "Menu"
+        button_width = 200
+        button_height = 60
+
+        center_x = (window_width - button_width) * 0.5
+        center_y = (window_height - button_height) * 0.5
+
+        imgui.set_next_window_position(center_x, center_y)
+        imgui.set_next_window_size(button_width, button_height)
+
+        imgui.begin("CenteredButton", False,
+                    imgui.WINDOW_NO_TITLE_BAR |
+                    imgui.WINDOW_NO_RESIZE |
+                    imgui.WINDOW_NO_MOVE |
+                    imgui.WINDOW_NO_BACKGROUND |
+                    imgui.WINDOW_NO_SCROLLBAR)
+
+        imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
+        imgui.push_style_color(imgui.COLOR_BUTTON, *imgui.get_style().colors[imgui.COLOR_BUTTON])
+
+        if imgui.button(button_label, width=button_width, height=button_height):
+            print("Menu button pressed!")
+
+        imgui.pop_style_color()
+        imgui.pop_style_var()
+        imgui.end()
+        
         # Render ImGui
         imgui.render()
         renderer.render(imgui.get_draw_data())
