@@ -61,12 +61,8 @@ def main():
         imgui.set_next_window_position(0, 0)
         imgui.set_next_window_size(min_canvas_width, min_canvas_height)
         imgui.begin("Main", False, flags=imgui.WINDOW_NO_TITLE_BAR | imgui.WINDOW_NO_RESIZE | imgui.WINDOW_NO_MOVE | imgui.WINDOW_NO_BACKGROUND)
-        imgui.text("Hello world!")
         imgui.text(f"Window size: {window_width}x{window_height}")
         imgui.text(f"Canvas size: {min_canvas_width}x{min_canvas_height}")
-        imgui.text("This text will be clipped if the window is too small!")
-        if imgui.button("Click Me"):
-            print("Button Clicked!")
         imgui.end()
  
         # Clear the screen
@@ -97,7 +93,6 @@ def main():
             imgui.push_style_color(imgui.COLOR_BUTTON, *imgui.get_style().colors[imgui.COLOR_BUTTON])
 
             if imgui.button(button_label, width=button_width, height=button_height):
-                print("Menu button pressed!")
                 show_menu = False  # Switch to operator screen
 
             imgui.pop_style_color()
