@@ -79,7 +79,7 @@ def main():
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
             nonlocal view_state
-            view_state = "operator_select"
+            view_state = "menu"
 
         # Use big font for the camera feed text
         imgui.push_font(big_font)
@@ -118,29 +118,64 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         if view_state == "menu":
-            button_label = "Menu"
+            total_buttons = 3
+            total_height = button_height * total_buttons + spacing * (total_buttons - 1)
+            start_y = (window_height - total_height) * 0.5
             center_x = (window_width - button_width) * 0.5
-            center_y = (window_height - button_height) * 0.5
 
-            imgui.set_next_window_position(center_x, center_y)
-            imgui.set_next_window_size(button_width, button_height)
-
-            imgui.begin("MenuButton", False,
+            imgui.set_next_window_position(center_x, start_y)
+            imgui.set_next_window_size(button_width, total_height)
+            
+            imgui.begin("MenuButtons", False,
                         imgui.WINDOW_NO_TITLE_BAR |
                         imgui.WINDOW_NO_RESIZE |
                         imgui.WINDOW_NO_MOVE |
                         imgui.WINDOW_NO_BACKGROUND |
                         imgui.WINDOW_NO_SCROLLBAR)
-
             imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
 
-            if imgui.button(button_label, width=button_width, height=button_height):
-                view_state = "operator_select"
+            if imgui.button("Operator Selection", width=button_width, height=button_height):
+                view_state = "Operator_selection"
+
+            imgui.spacing()
+            if imgui.button("Settings", width=button_width, height=button_height):
+                view_state = "Settings"
+
+            imgui.spacing()
+            if imgui.button("Exit", width=button_width, height=button_height):
+                print("Exiting application...")
+                view_state = "Exit"
 
             imgui.pop_style_var()
             imgui.end()            
 
-        elif view_state == "operator_select":
+        elif view_state == "Exit":
+            glfw.set_window_should_close(window, True)
+
+        elif view_state == "Settings":
+            total_buttons = 1
+            total_height = button_height * total_buttons + spacing * (total_buttons - 1)
+            start_y = (window_height - total_height) * 0.5
+            center_x = (window_width - button_width) * 0.5
+
+            imgui.set_next_window_position(center_x, start_y)
+            imgui.set_next_window_size(button_width, total_height)
+
+            imgui.begin("Settings", False,
+                        imgui.WINDOW_NO_TITLE_BAR |
+                        imgui.WINDOW_NO_RESIZE |
+                        imgui.WINDOW_NO_MOVE |
+                        imgui.WINDOW_NO_BACKGROUND |
+                        imgui.WINDOW_NO_SCROLLBAR)
+            imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
+
+            if imgui.button("Back", width=button_width, height=button_height):
+                view_state = "menu"
+
+            imgui.pop_style_var()
+            imgui.end()
+
+        elif view_state == "Operator_selection":
             total_buttons = 5
             total_height = button_height * total_buttons + spacing * (total_buttons - 1)
             start_y = (window_height - total_height) * 0.5
@@ -175,7 +210,7 @@ def main():
 
             imgui.spacing()
             if imgui.button("Back", width=button_width, height=button_height):
-                view_state = "menu"
+                view_state = "Operator_selection"
 
             imgui.pop_style_var()
             imgui.end()
