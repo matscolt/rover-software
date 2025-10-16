@@ -131,7 +131,7 @@ def main():
                 view_state = "operator_select"
 
             imgui.pop_style_var()
-            imgui.end()
+            imgui.end()            
 
         elif view_state == "operator_select":
             total_buttons = 5
