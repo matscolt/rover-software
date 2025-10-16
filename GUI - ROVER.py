@@ -97,7 +97,7 @@ def main():
 
             imgui.pop_style_color()
             imgui.pop_style_var()
-            imgui.end()
+            imgui.end()            
 
         else:
             # Operator buttons vertically centered
