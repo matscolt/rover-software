@@ -40,6 +40,13 @@ def main():
     big_font = io.fonts.add_font_from_file_ttf("C:/Windows/Fonts/arial.ttf", big_font_size)
     # You can change the path above to another ttf font file on your system
 
+    # Name for the operator 
+    operator_1 = "Operator 1"
+    operator_2 = "Operator 2"
+    operator_3 = "Operator 3"
+    operator_4 = "Operator 4"
+
+
     # Build font atlas
     imgui.get_io().fonts.get_tex_data_as_rgba32()
 
@@ -151,20 +158,20 @@ def main():
 
             imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
 
-            if imgui.button("Operator 1", width=button_width, height=button_height):
-                view_state = "operator_1"
+            if imgui.button(operator_1, width=button_width, height=button_height):
+                view_state = operator_1
 
             imgui.spacing()
-            if imgui.button("Operator 2", width=button_width, height=button_height):
-                view_state = "operator_2"
+            if imgui.button(operator_2, width=button_width, height=button_height):
+                view_state = operator_2
 
             imgui.spacing()
-            if imgui.button("Operator 3", width=button_width, height=button_height):
-                view_state = "operator_3"
+            if imgui.button(operator_3, width=button_width, height=button_height):
+                view_state = operator_3
 
             imgui.spacing()
-            if imgui.button("Operator 4", width=button_width, height=button_height):
-                view_state = "operator_4"
+            if imgui.button(operator_4, width=button_width, height=button_height):
+                view_state = operator_4
 
             imgui.spacing()
             if imgui.button("Back", width=button_width, height=button_height):
@@ -173,13 +180,13 @@ def main():
             imgui.pop_style_var()
             imgui.end()
 
-        elif view_state == "operator_1":
+        elif view_state == operator_1:
             draw_operator_feed(1)
-        elif view_state == "operator_2":
+        elif view_state == operator_2:
             draw_operator_feed(2)
-        elif view_state == "operator_3":
+        elif view_state == operator_3:
             draw_operator_feed(3)
-        elif view_state == "operator_4":
+        elif view_state == operator_4:
             draw_operator_feed(4)
 
         # Render ImGui
