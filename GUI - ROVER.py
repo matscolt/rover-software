@@ -41,7 +41,7 @@ def main():
     # You can change the path above to another ttf font file on your system
 
     # Name for the operator 
-    operator_1 = "Operator 1"
+    operator_1 = "Rover Driver"
     operator_2 = "Operator 2"
     operator_3 = "Operator 3"
     operator_4 = "Operator 4"
@@ -61,13 +61,13 @@ def main():
     button_height = 60
     spacing = 20
 
-    def draw_operator_feed(operator_number):
-        feed_text = f"Operator {operator_number} Camera Feed"
+    def draw_operator_feed(operator_name):
+        feed_text = f"{operator_name} Camera Feed"
 
         imgui.set_next_window_position(0, 0)
         imgui.set_next_window_size(window_width, window_height)
 
-        imgui.begin(f"Operator{operator_number}Feed", False,
+        imgui.begin(f"{operator_name}Feed", False,
                     imgui.WINDOW_NO_TITLE_BAR |
                     imgui.WINDOW_NO_RESIZE |
                     imgui.WINDOW_NO_MOVE |
@@ -181,13 +181,13 @@ def main():
             imgui.end()
 
         elif view_state == operator_1:
-            draw_operator_feed(1)
+            draw_operator_feed(operator_1)
         elif view_state == operator_2:
-            draw_operator_feed(2)
+            draw_operator_feed(operator_2)
         elif view_state == operator_3:
-            draw_operator_feed(3)
+            draw_operator_feed(operator_3)
         elif view_state == operator_4:
-            draw_operator_feed(4)
+            draw_operator_feed(operator_4)
 
         # Render ImGui
         imgui.render()
