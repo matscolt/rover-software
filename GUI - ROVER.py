@@ -29,33 +29,33 @@ def main():
     imgui.create_context()
     io = imgui.get_io()
 
-    # Set fixed font size (constant regardless of window size)
-    io.font_global_scale = 1.3
-    io.fonts.get_tex_data_as_rgba32()
+    # Load fonts
+    # Default font size for normal UI text
+    base_font_size = 16
+    # Load the default font at base size
+    io.fonts.clear()
+    base_font = io.fonts.add_font_default()
+    # Load a bigger font for the large Operator Feed text (4x size)
+    big_font_size = base_font_size * 4
+    big_font = io.fonts.add_font_from_file_ttf("C:/Windows/Fonts/arial.ttf", big_font_size)
+    # You can change the path above to another ttf font file on your system
+
+    # Build font atlas
+    imgui.get_io().fonts.get_tex_data_as_rgba32()
 
     # Define minimum ImGui canvas size
     min_canvas_width, min_canvas_height = 800, 600
 
     renderer = GlfwRenderer(window)
 
-    # View state: menu, operator_select, operator_1, operator_2, etc.
     view_state = "menu"
 
-    # Constants
     button_width = 200
     button_height = 60
     spacing = 20
 
     def draw_operator_feed(operator_number):
         feed_text = f"Operator {operator_number} Camera Feed"
-
-        # Calculate text size for normal font
-        normal_text_size = imgui.calc_text_size(feed_text)[0], imgui.calc_text_size(feed_text)[1]
-
-        # Enlarge text by scaling font 4x using imgui.push_font or imgui.push_style_scale if no custom font
-        # Since you didn't load custom fonts, use push_style_var for scale (scale the whole text)
-        # We'll use imgui.push_style_var(STYLE_SCALE) but ImGui-Python doesn't have it,
-        # so alternatively use ImGui's text scaling via a large font_global_scale temporarily
 
         imgui.set_next_window_position(0, 0)
         imgui.set_next_window_size(window_width, window_height)
@@ -67,22 +67,17 @@ def main():
                     imgui.WINDOW_NO_BACKGROUND |
                     imgui.WINDOW_NO_SCROLLBAR)
 
-        # Draw Back button top-left
+        # Back button top-left
         imgui.set_cursor_pos_x(10)
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
             nonlocal view_state
             view_state = "operator_select"
 
-        # Enlarge text: push a style var to scale font (simulate 4x)
-        # Since imgui in Python bindings doesn't directly support push_style_var for scale,
-        # the usual workaround is to temporarily increase io.font_global_scale.
-        # Save old scale, increase, draw, then revert
+        # Use big font for the camera feed text
+        imgui.push_font(big_font)
 
-        old_scale = imgui.get_io().font_global_scale
-        imgui.get_io().font_global_scale = old_scale * 4.0  # 4x scale
-
-        # Calculate centered position for text at 40% height
+        # Center text
         text_width, text_height = imgui.calc_text_size(feed_text)
         center_x = (window_width - text_width) * 0.5
         center_y = window_height * 0.4
@@ -91,8 +86,7 @@ def main():
         imgui.set_cursor_pos_y(center_y)
         imgui.text(feed_text)
 
-        # Restore old font scale
-        imgui.get_io().font_global_scale = old_scale
+        imgui.pop_font()
 
         imgui.end()
 
@@ -117,7 +111,6 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         if view_state == "menu":
-            # Draw Menu Button
             button_label = "Menu"
             center_x = (window_width - button_width) * 0.5
             center_y = (window_height - button_height) * 0.5
@@ -141,7 +134,6 @@ def main():
             imgui.end()
 
         elif view_state == "operator_select":
-            # Draw operator selection buttons
             total_buttons = 5
             total_height = button_height * total_buttons + spacing * (total_buttons - 1)
             start_y = (window_height - total_height) * 0.5
