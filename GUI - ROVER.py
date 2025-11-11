@@ -216,7 +216,7 @@ def main():
 
             imgui.spacing()
             if imgui.button("Back", width=button_width, height=button_height):
-                view_state = "Operator_selection"
+                view_state = "menu"
 
             imgui.pop_style_var()
             imgui.end()
