@@ -79,7 +79,7 @@ def main():
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
             nonlocal view_state
-            view_state = "menu"
+            view_state = "Operator_selection"
 
         # Use big font for the camera feed text
         imgui.push_font(big_font)
@@ -210,7 +210,7 @@ def main():
 
             imgui.spacing()
             if imgui.button("Back", width=button_width, height=button_height):
-                view_state = "Operator_selection"
+                view_state = "menu"
 
             imgui.pop_style_var()
             imgui.end()
