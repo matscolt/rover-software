@@ -80,6 +80,12 @@ def main():
         if imgui.button("Back", width=button_width, height=button_height):
             nonlocal view_state
             view_state = "menu"
+        
+        # Emergency Stop button top-right
+        imgui.set_cursor_pos_x(window_width - button_width - 10)
+        imgui.set_cursor_pos_y(10)
+        if imgui.button("Emergency Stop", width=button_width, height=button_height):
+            print("Emergency Stop button pressed!")
 
         # Use big font for the camera feed text
         imgui.push_font(big_font)
