@@ -30,22 +30,17 @@ def main():
     io = imgui.get_io()
 
     # Load fonts
-    # Default font size for normal UI text
     base_font_size = 16
-    # Load the default font at base size
     io.fonts.clear()
     base_font = io.fonts.add_font_default()
-    # Load a bigger font for the large Operator Feed text (4x size)
     big_font_size = base_font_size * 4
     big_font = io.fonts.add_font_from_file_ttf("C:/Windows/Fonts/arial.ttf", big_font_size)
-    # You can change the path above to another ttf font file on your system
 
-    # Name for the operator 
+    # Name for the operators
     operator_1 = "Rover Driver"
     operator_2 = "Operator 2"
     operator_3 = "Operator 3"
     operator_4 = "Operator 4"
-
 
     # Build font atlas
     imgui.get_io().fonts.get_tex_data_as_rgba32()
@@ -61,6 +56,25 @@ def main():
     button_height = 60
     spacing = 20
 
+    ### ADDED — GLOBAL Emergency Stop overlay
+    def draw_global_emergency_button():
+        padding = 10
+        imgui.set_next_window_position(window_width - button_width - padding, padding)
+        imgui.set_next_window_size(button_width, button_height)
+
+        imgui.begin("GlobalEmergencyStop", False,
+                    imgui.WINDOW_NO_TITLE_BAR |
+                    imgui.WINDOW_NO_RESIZE |
+                    imgui.WINDOW_NO_MOVE |
+                    imgui.WINDOW_NO_BACKGROUND |
+                    imgui.WINDOW_NO_SCROLLBAR |
+                    imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS)
+
+        if imgui.button("Emergency Stop", width=button_width, height=button_height):
+            print("GLOBAL Emergency Stop pressed!")
+
+        imgui.end()
+
     def draw_operator_feed(operator_name):
         feed_text = f"{operator_name} Camera Feed"
 
@@ -74,23 +88,18 @@ def main():
                     imgui.WINDOW_NO_BACKGROUND |
                     imgui.WINDOW_NO_SCROLLBAR)
 
-        # Back button top-left
+        # Back button
         imgui.set_cursor_pos_x(10)
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
             nonlocal view_state
             view_state = "menu"
-        
-        # Emergency Stop button top-right
-        imgui.set_cursor_pos_x(window_width - button_width - 10)
-        imgui.set_cursor_pos_y(10)
-        if imgui.button("Emergency Stop", width=button_width, height=button_height):
-            print("Emergency Stop button pressed!")
+
+        ### REMOVED — Emergency Stop button (now global)
 
         # Use big font for the camera feed text
         imgui.push_font(big_font)
 
-        # Center text
         text_width, text_height = imgui.calc_text_size(feed_text)
         center_x = (window_width - text_width) * 0.5
         center_y = window_height * 0.4
@@ -112,14 +121,11 @@ def main():
 
         io.display_size = (max(window_width, min_canvas_width), max(window_height, min_canvas_height))
 
-        # Process events
         glfw.poll_events()
         renderer.process_inputs()
 
-        # Start new ImGui frame
         imgui.new_frame()
 
-        # Clear the screen
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
@@ -230,14 +236,15 @@ def main():
         elif view_state == operator_4:
             draw_operator_feed(operator_4)
 
+        ### ADDED — draw the global emergency stop button every frame
+        draw_global_emergency_button()
+
         # Render ImGui
         imgui.render()
         renderer.render(imgui.get_draw_data())
 
-        # Swap buffers
         glfw.swap_buffers(window)
-
-    # Cleanup
+    #Cleanup
     renderer.shutdown()
     glfw.terminate()
 
