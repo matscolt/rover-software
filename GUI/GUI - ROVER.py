@@ -2,6 +2,8 @@ import imgui
 from imgui.integrations.glfw import GlfwRenderer
 import glfw
 import OpenGL.GL as gl
+import numpy as np
+import cv2 
 
 def main():
     # Initialize GLFW
