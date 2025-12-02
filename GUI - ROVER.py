@@ -71,7 +71,7 @@ def main():
                     imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS)
 
         if imgui.button("Emergency Stop", width=button_width, height=button_height):
-            print("GLOBAL Emergency Stop pressed!")
+            print("Emergency Stop pressed!")
 
         imgui.end()
 
