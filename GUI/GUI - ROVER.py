@@ -38,8 +38,8 @@ def main():
 
     # Name for the operators
     operator_1 = "Rover Driver"
-    operator_2 = "Operator 2"
-    operator_3 = "Operator 3"
+    operator_2 = "Manipulator Operator"
+    operator_3 = "Observer"
     operator_4 = "Operator 4"
 
     # Build font atlas
