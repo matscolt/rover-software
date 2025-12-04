@@ -17,9 +17,6 @@ def load_texture_cv(path):
     if image is None:
         raise FileNotFoundError(f"Could not load texture: {path}")
 
-    # Flip vertically (OpenGL coordinates)
-    image = cv2.flip(image, 0)
-
     # Convert BGR/BGRA → RGBA
     if image.shape[2] == 3:
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
