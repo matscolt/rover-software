@@ -5,6 +5,39 @@ import OpenGL.GL as gl
 import numpy as np
 import cv2 
 
+# ------------------ OpenCV Texture Loader ------------------
+def load_texture_cv(path):
+    # Read with OpenCV (BGR format)
+    image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
+    if image is None:
+        raise FileNotFoundError(f"Could not load texture: {path}")
+
+    # Flip vertically (OpenGL coordinates)
+    image = cv2.flip(image, 0)
+
+    # Convert BGR/BGRA → RGBA
+    if image.shape[2] == 3:
+        image = cv2.cvtColor(image, cv2.COLOR_BGR2RGBA)
+    elif image.shape[2] == 4:
+        image = cv2.cvtColor(image, cv2.COLOR_BGRA2RGBA)
+
+    height, width, _ = image.shape
+    img_data = image.tobytes()
+
+    # Generate OpenGL texture
+    texture_id = gl.glGenTextures(1)
+    gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
+    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
+    gl.glTexImage2D(
+        gl.GL_TEXTURE_2D, 0, gl.GL_RGBA,
+        width, height, 0,
+        gl.GL_RGBA, gl.GL_UNSIGNED_BYTE, img_data
+    )
+
+    return texture_id, width, height
+
+# ------------------ Main GUI ------------------
 def main():
     # Initialize GLFW
     if not glfw.init():
@@ -58,8 +91,16 @@ def main():
     button_height = 60
     spacing = 20
 
-    ### ADDED — GLOBAL Emergency Stop overlay
+    # ---- LOAD EMERGENCY STOP IMAGES USING OpenCV ----
+    em_unpressed, uw, uh = load_texture_cv("C:/Users/victo/OneDrive/Desktop/Emergency_stop_notpressed.png")
+    em_pressed, pw, ph = load_texture_cv("C:/Users/victo/OneDrive/Desktop/Emergency_stop_pressed.png")
+    emergency_pressed = False
+
+    # ------------------ Emergency Stop Button ------------------
+    
     def draw_global_emergency_button():
+        nonlocal emergency_pressed
+
         padding = 10
         imgui.set_next_window_position(window_width - button_width - padding, padding)
         imgui.set_next_window_size(button_width, button_height)
@@ -71,13 +112,20 @@ def main():
                     imgui.WINDOW_NO_BACKGROUND |
                     imgui.WINDOW_NO_SCROLLBAR |
                     imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS)
-
-        if imgui.button("Emergency Stop", width=button_width, height=button_height):
-            print("Emergency Stop pressed!")
+        
+        tex = em_pressed if emergency_pressed else em_unpressed
+        if imgui.image_button(tex, uw, uh):
+            emergency_pressed = not emergency_pressed
+            if emergency_pressed == True:
+                print("Emergency stop enabled")
+            else:
+                print("Emergency stop disabled")
 
         imgui.end()
 
+    # ------------------ Operator Feed ------------------    
     def draw_operator_feed(operator_name):
+        nonlocal view_state
         feed_text = f"{operator_name} Camera Feed"
 
         imgui.set_next_window_position(0, 0)
@@ -94,12 +142,8 @@ def main():
         imgui.set_cursor_pos_x(10)
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
-            nonlocal view_state
             view_state = "menu"
 
-        ### REMOVED — Emergency Stop button (now global)
-
-        # Use big font for the camera feed text
         imgui.push_font(big_font)
 
         text_width, text_height = imgui.calc_text_size(feed_text)
@@ -109,19 +153,21 @@ def main():
         imgui.set_cursor_pos_x(center_x)
         imgui.set_cursor_pos_y(center_y)
         imgui.text(feed_text)
-
         imgui.pop_font()
-
         imgui.end()
 
+    # ------------------ Main Loop ------------------
     while not glfw.window_should_close(window):
         # Handle window resizing
         current_width, current_height = glfw.get_window_size(window)
         if (current_width, current_height) != (window_width, window_height):
             window_width, window_height = current_width, current_height
             gl.glViewport(0, 0, window_width, window_height)
-
-        io.display_size = (max(window_width, min_canvas_width), max(window_height, min_canvas_height))
+        
+        io.display_size = (
+            max(window_width, min_canvas_width),
+            max(window_height, min_canvas_height)
+        )
 
         glfw.poll_events()
         renderer.process_inputs()
@@ -131,6 +177,7 @@ def main():
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
+        # ------------------ Menu ------------------
         if view_state == "menu":
             total_buttons = 3
             total_height = button_height * total_buttons + spacing * (total_buttons - 1)
@@ -161,8 +208,9 @@ def main():
                 view_state = "Exit"
 
             imgui.pop_style_var()
-            imgui.end()            
+            imgui.end()       
 
+        # ------------------ Other Views ------------------
         elif view_state == "Exit":
             glfw.set_window_should_close(window, True)
 
@@ -238,7 +286,7 @@ def main():
         elif view_state == operator_4:
             draw_operator_feed(operator_4)
 
-        ### ADDED — draw the global emergency stop button every frame
+        # ------------------ Draw Emergency Button ------------------
         draw_global_emergency_button()
 
         # Render ImGui
