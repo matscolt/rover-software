@@ -10,11 +10,6 @@ from pathlib import Path
 Basedir = Path(__file__).resolve().parent
 
 
-
-
-
-
-
 # ------------------ OpenCV Texture Loader ------------------
 def load_texture_cv(path):
     # Read with OpenCV (BGR format)
@@ -112,8 +107,8 @@ def main():
         nonlocal emergency_pressed
 
         padding = 10
-        imgui.set_next_window_position(window_width - button_width - padding, padding)
-        imgui.set_next_window_size(button_width, button_height)
+        imgui.set_next_window_position(window_width - uw - padding, padding)
+        imgui.set_next_window_size(uw, uh)
 
         imgui.begin("GlobalEmergencyStop", False,
                     imgui.WINDOW_NO_TITLE_BAR |
