@@ -107,6 +107,9 @@ def main():
         imgui.set_next_window_position(window_width - uw - padding, padding)
         imgui.set_next_window_size(uw, uh)
 
+        imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (0, 0))
+        imgui.push_style_var(imgui.STYLE_FRAME_PADDING, (0, 0))
+
         imgui.begin("GlobalEmergencyStop", False,
                     imgui.WINDOW_NO_TITLE_BAR |
                     imgui.WINDOW_NO_RESIZE |
@@ -124,6 +127,9 @@ def main():
                 print("Emergency stop disabled")
 
         imgui.end()
+
+        imgui.pop_style_var()
+        imgui.pop_style_var()
 
     # ------------------ Operator Feed ------------------    
     def draw_operator_feed(operator_name):
