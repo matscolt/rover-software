@@ -4,6 +4,16 @@ import glfw
 import OpenGL.GL as gl
 import numpy as np
 import cv2 
+from pathlib import Path
+
+# ------------------ Constants and other stuff ------------------
+Basedir = Path(__file__).resolve().parent
+
+
+
+
+
+
 
 # ------------------ OpenCV Texture Loader ------------------
 def load_texture_cv(path):
@@ -92,8 +102,8 @@ def main():
     spacing = 20
 
     # ---- LOAD EMERGENCY STOP IMAGES USING OpenCV ----
-    em_unpressed, uw, uh = load_texture_cv("C:/Users/victo/OneDrive/Desktop/Emergency_stop_notpressed.png")
-    em_pressed, pw, ph = load_texture_cv("C:/Users/victo/OneDrive/Desktop/Emergency_stop_pressed.png")
+    em_unpressed, uw, uh = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_notpressed.png")
+    em_pressed, pw, ph = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_pressed.png")
     emergency_pressed = False
 
     # ------------------ Emergency Stop Button ------------------
