@@ -150,7 +150,7 @@ def main():
         imgui.set_cursor_pos_x(10)
         imgui.set_cursor_pos_y(10)
         if imgui.button("Back", width=button_width, height=button_height):
-            view_state = "menu"
+            view_state = "Operator_selection"
 
         imgui.push_font(big_font)
 
