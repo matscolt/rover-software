@@ -94,8 +94,8 @@ def main():
     spacing = 20
 
     # ---- LOAD EMERGENCY STOP IMAGES USING OpenCV ----
-    em_unpressed, uw, uh = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_notpressed.png")
-    em_pressed, pw, ph = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_pressed.png")
+    em_unpressed, uw, uh = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_notpressed_v2.png")
+    em_pressed, pw, ph = load_texture_cv(f"{Basedir}/Assets/Emergency_stop_pressed_v2.png")
     emergency_pressed = False
 
     # ------------------ Emergency Stop Button ------------------
