@@ -1,7 +1,7 @@
 --- NOW ---
 image on e-stop
 ability to switch e-stop on and off
-multiple cameras under one operator
+multiple cameras(test feeds) under one operator
 one file for each operator
 
 
@@ -9,6 +9,7 @@ one file for each operator
 camera feed
 design for each operator
 find ud af hvordan docker virker (kan undgå installering af ubuntu)
+Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
 
 
 --- TASKS DONE ---
