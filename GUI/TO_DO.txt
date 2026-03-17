@@ -1,3 +1,6 @@
+--- FIX ---
+E-stop doesnt work within operator feeds
+
 --- NOW ---
 multiple camera feeds(test) under one operator
 one file for each operator
