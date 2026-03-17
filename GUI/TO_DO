@@ -1,14 +1,12 @@
 --- NOW ---
 multiple cameras(test) under one operator
 one file for each operator
-
+find ud af hvordan docker virker (kan undgå installering af ubuntu)
+Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
 
 --- LATER ---
 camera feed
 design for each operator
-find ud af hvordan docker virker (kan undgå installering af ubuntu)
-Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
-
 
 --- TASKS DONE ---
 Created GUI script 0.1
