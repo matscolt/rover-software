@@ -2,13 +2,15 @@
 E-stop doesnt work within operator feeds
 
 --- NOW ---
+write the config file and add the ability to change settings
 multiple camera feeds(test) under one operator
-one file for each operator
 find ud af hvordan docker virker (kan undgå installering af ubuntu)
 Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
 
 --- LATER ---
 camera feed
+move operator code to each individual file
+dropdown menu for multiple camera selection (changes the config file)
 design for each operator
 
 --- TASKS DONE ---
