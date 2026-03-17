@@ -1,7 +1,5 @@
 --- NOW ---
-image on e-stop
-ability to switch e-stop on and off
-multiple cameras(test feeds) under one operator
+multiple cameras(test) under one operator
 one file for each operator
 
 
@@ -14,3 +12,5 @@ Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi s
 
 --- TASKS DONE ---
 Created GUI script 0.1
+image on e-stop
+ability to switch e-stop on and off
