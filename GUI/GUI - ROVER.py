@@ -104,7 +104,10 @@ def main():
         nonlocal emergency_pressed
 
         padding = 10
-        imgui.set_next_window_position(window_width - uw - padding, padding)
+        button_x = window_width - uw - padding
+        button_y = padding
+        
+        imgui.set_next_window_position(button_x, button_y)
         imgui.set_next_window_size(uw, uh)
 
         imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (0, 0))
@@ -115,8 +118,13 @@ def main():
                     imgui.WINDOW_NO_RESIZE |
                     imgui.WINDOW_NO_MOVE |
                     imgui.WINDOW_NO_BACKGROUND |
-                    imgui.WINDOW_NO_SCROLLBAR |
-                    imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS)
+                    imgui.WINDOW_NO_SCROLLBAR)
+        
+        # Only bring to focus when mouse is hovering over the button
+        mouse_x, mouse_y = imgui.get_io().mouse_pos
+        if (button_x <= mouse_x <= button_x + uw and 
+            button_y <= mouse_y <= button_y + uh):
+            imgui.set_window_focus()
         
         tex = em_pressed if emergency_pressed else em_unpressed
         if imgui.image_button(tex, uw, uh):
