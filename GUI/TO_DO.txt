@@ -1,5 +1,4 @@
 --- FIX ---
-E-stop doesnt work within operator feeds
 
 --- NOW ---
 write the config file and add the ability to change settings
@@ -17,3 +16,4 @@ design for each operator
 Created GUI script 0.1
 image on e-stop
 ability to switch e-stop on and off
+E-stop doesnt work within operator feeds
