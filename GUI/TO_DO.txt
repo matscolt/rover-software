@@ -5,6 +5,7 @@ write the config file and add the ability to change settings
 multiple camera feeds(test) under one operator
 find ud af hvordan docker virker (kan undgå installering af ubuntu)
 Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
+Change the else if statements in the code to switch cases for better streamlining of the code
 
 --- LATER ---
 camera feed
