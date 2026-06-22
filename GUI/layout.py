@@ -1,7 +1,7 @@
 import imgui
 
 from panels.camera_panel import draw_camera_panel
-from GUI.panels.camera_selection_panel import draw_camera_selection_panel
+from panels.camera_selection_panel import draw_camera_selection_panel
 from panels.telemetry_panel import draw_telemetry_panel
 from panels.E_stop import draw_estop_panel
 

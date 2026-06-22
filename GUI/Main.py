@@ -1,62 +1,17 @@
-import glfw
-import cv2
-import OpenGL.GL as gl
-import imgui
-from imgui.integrations.glfw import GlfwRenderer
-from pathlib import Path
 
+from pathlib import Path
+import cv2
+import glfw
+import imgui
+import OpenGL.GL as gl
+from imgui.integrations.glfw import GlfwRenderer
+
+from rendering.textures import load_texture_cv, create_empty_texture, update_texture_from_frame, delete_texture
 from layout import draw_layout
 from core.rover_state import RoverState
 
+
 BASE_DIR = Path(__file__).resolve().parent
-
-def load_texture_cv(path):
-    # Load image with OpenCV (BGR or BGRA)
-    image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
-
-    if image is None:
-        raise FileNotFoundError(f"Could not load texture: {path}")
-
-    height, width = image.shape[:2]
-
-    # Detect number of channels
-    if image.shape[2] == 3:
-        format = gl.GL_BGR
-        internal_format = gl.GL_RGB
-    elif image.shape[2] == 4:
-        format = gl.GL_BGRA
-        internal_format = gl.GL_RGBA
-    else:
-        raise ValueError("Unsupported image format")
-
-    # Generate texture ID
-    texture_id = gl.glGenTextures(1)
-    gl.glBindTexture(gl.GL_TEXTURE_2D, texture_id)
-
-    # Upload texture to GPU
-    gl.glTexImage2D(
-        gl.GL_TEXTURE_2D,
-        0,
-        internal_format,
-        width,
-        height,
-        0,
-        format,
-        gl.GL_UNSIGNED_BYTE,
-        image
-    )
-
-    # Set texture parameters
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MIN_FILTER, gl.GL_LINEAR)
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_MAG_FILTER, gl.GL_LINEAR)
-
-    # Prevent stretching artifacts
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_S, gl.GL_CLAMP_TO_EDGE)
-    gl.glTexParameteri(gl.GL_TEXTURE_2D, gl.GL_TEXTURE_WRAP_T, gl.GL_CLAMP_TO_EDGE)
-
-    gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
-
-    return texture_id, width, height
 
 def main():
     if not glfw.init():
@@ -77,7 +32,28 @@ def main():
     state.em_unpressed_tex, state.em_unpressed_w, state.em_unpressed_h = load_texture_cv(
         str(BASE_DIR / "assets" / "estop_unpressed.png")
     )
-     
+    # Open camera
+    cap = cv2.VideoCapture(0)  # 0 = default webcam
+
+    if not cap.isOpened():
+        print("Could not open camera")
+        cap = None
+    else:
+        ret, frame = cap.read()
+        if ret:
+            h, w = frame.shape[:2]
+
+            state.camera_width = w
+            state.camera_height = h
+            state.camera_channels = 3
+            state.camera_texture = create_empty_texture(w, h, channels=3)
+
+            update_texture_from_frame(state.camera_texture, frame)
+        else:
+            print("Could not read first camera frame")
+            cap.release()
+            cap = None
+
 
 
     while not glfw.window_should_close(window):
@@ -85,7 +61,14 @@ def main():
         impl.process_inputs()
 
         imgui.new_frame()
-
+        # Update live camera feed
+        if cap is not None and state.camera_texture is not None:
+            ret, frame = cap.read()
+            if ret:
+                w, h, ch = update_texture_from_frame(state.camera_texture, frame)
+                state.camera_width = w
+                state.camera_height = h
+                state.camera_channels = ch
         # Draw entire GUI
         draw_layout(state)
 
