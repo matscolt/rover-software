@@ -5,28 +5,26 @@ import imgui
 def draw_estop_panel(state):
     imgui.begin("Emergency Stop")
 
-    # Make it BIG and RED
-    imgui.push_style_color(imgui.COLOR_BUTTON, (1.0, 0.0, 0.0, 1.0))
-    imgui.push_style_color(imgui.COLOR_BUTTON_HOVERED, (1.0, 0.2, 0.2, 1.0))
-    imgui.push_style_color(imgui.COLOR_BUTTON_ACTIVE, (0.8, 0.0, 0.0, 1.0))
+    # Select correct texture
+    tex = state.em_pressed_tex if state.emergency_pressed else state.em_unpressed_tex
 
+    # Get available space in window
     width, height = imgui.get_window_size()
 
-    if imgui.button("STOP", width - 20, height - 40):
-        state.emergency_pressed = not state.emergency_pressed
+    # Slight padding so it looks nice
+    button_width = width - 20
+    button_height = height - 40
 
-        if state.emergency_pressed:
-            print("🚨 EMERGENCY STOP ACTIVATED")
-            state.command = "STOP_ALL"
-        else:
-            print("✅ Emergency cleared")
+    if tex is not None:
+        if imgui.image_button(tex, button_width, button_height):
+            state.emergency_pressed = not state.emergency_pressed
 
-    imgui.pop_style_color(3)
-
-    # Status text
-    if state.emergency_pressed:
-        imgui.text_colored("STATUS: ACTIVE", 1, 0, 0)
+            if state.emergency_pressed:
+                print("🚨 EMERGENCY STOP ACTIVATED")
+                state.command = "STOP_ALL"
+            else:
+                print("✅ Emergency cleared")
     else:
-        imgui.text("STATUS: INACTIVE")
+        imgui.text("E-stop image not loaded")
 
     imgui.end()
