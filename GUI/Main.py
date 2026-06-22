@@ -17,9 +17,6 @@ def load_texture_cv(path):
     if image is None:
         raise FileNotFoundError(f"Could not load texture: {path}")
 
-    # Flip vertically (OpenGL expects origin bottom-left)
-    image = cv2.flip(image, 0)
-
     height, width = image.shape[:2]
 
     # Detect number of channels
@@ -59,7 +56,7 @@ def load_texture_cv(path):
 
     gl.glBindTexture(gl.GL_TEXTURE_2D, 0)
 
-    return texture_id
+    return texture_id, width, height
 
 def main():
     if not glfw.init():
@@ -74,14 +71,12 @@ def main():
     state = RoverState()
 
     # ✅ Load textures ONCE
-    state.em_pressed_tex = load_texture_cv(
+    state.em_pressed_tex, state.em_pressed_w, state.em_pressed_h = load_texture_cv(
         str(BASE_DIR / "assets" / "estop_pressed.png")
     )
-
-    state.em_unpressed_tex = load_texture_cv(
+    state.em_unpressed_tex, state.em_unpressed_w, state.em_unpressed_h = load_texture_cv(
         str(BASE_DIR / "assets" / "estop_unpressed.png")
     )
-
      
 
 
