@@ -22,7 +22,7 @@ def main():
         print("Could not initialize GLFW")
         return
 
-    window = glfw.create_window(1280, 800, "Rover GUI", None, None)
+    window = glfw.create_window(1600, 1000, "Rover GUI", None, None)
     glfw.make_context_current(window)
 
     imgui.create_context()

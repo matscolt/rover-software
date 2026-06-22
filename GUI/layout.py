@@ -8,8 +8,8 @@ from panels.E_stop import draw_estop_panel
 def draw_layout(state):
     width, height = imgui.get_io().display_size  
 
-    left_width = width * 0.8
-    right_width = width * 0.2
+    left_width = width * 0.85
+    right_width = width * 0.15
 
     top_height = height * 0.5
     bottom_height = height * 0.5
