@@ -70,7 +70,7 @@ def main():
 
     state = RoverState()
 
-    # ✅ Load textures ONCE
+    # Load textures ONCE
     state.em_pressed_tex, state.em_pressed_w, state.em_pressed_h = load_texture_cv(
         str(BASE_DIR / "assets" / "estop_pressed.png")
     )

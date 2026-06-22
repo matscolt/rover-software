@@ -1,9 +1,13 @@
-# panels/estop_panel.py
-
 import imgui
-def draw_estop_panel(state):
-    imgui.begin("Emergency Stop")
 
+def draw_estop_panel(state):
+    
+    imgui.begin(
+        "Emergency Stop",
+        flags=imgui.WINDOW_NO_SCROLLBAR | imgui.WINDOW_NO_SCROLL_WITH_MOUSE
+    )
+
+    # Pick active texture + matching image size
     if state.emergency_pressed:
         tex = state.em_pressed_tex
         img_w = state.em_pressed_w
@@ -13,27 +17,30 @@ def draw_estop_panel(state):
         img_w = state.em_unpressed_w
         img_h = state.em_unpressed_h
 
-    if tex is not None:
-        # Get available space
-        window_width, window_height = imgui.get_window_size()
+    if tex is None:
+        imgui.text("E-stop image not loaded")
+        imgui.end()
+        return
 
-        max_w = window_width - 20
-        max_h = window_height - 40
+    # Real usable area inside the window
+    avail_w, avail_h = imgui.get_content_region_available()
 
-        # ✅ Preserve aspect ratio
-        scale = min(max_w / img_w, max_h / img_h)
-        draw_w = img_w * scale
-        draw_h = img_h * scale
+    # Keep aspect ratio
+    scale = min(avail_w / img_w, avail_h / img_h)
+    draw_w = img_w * scale
+    draw_h = img_h * scale
 
-        if imgui.image_button(tex, draw_w, draw_h):
-            state.emergency_pressed = not state.emergency_pressed
+    # Center the image inside the panel
+    cursor_x, cursor_y = imgui.get_cursor_pos()
+    offset_x = max((avail_w - draw_w) * 0.5, 0)
+    offset_y = max((avail_h - draw_h) * 0.5, 0)
+    imgui.set_cursor_pos((cursor_x + offset_x, cursor_y + offset_y))
 
-            if state.emergency_pressed:
-                print("EMERGENCY STOP ACTIVATED")
-                state.command = "STOP_ALL"
-            else:
-                print("Emergency cleared")
-    else:
-        imgui.text("Missing texture")
+    clicked = imgui.image_button(tex, draw_w, draw_h)
+
+    if clicked:
+        state.emergency_pressed = not state.emergency_pressed
+        if state.emergency_pressed:
+            state.command = "STOP_ALL"
 
     imgui.end()

@@ -1,7 +1,7 @@
 import imgui
 
-def draw_control_panel(state):
-    imgui.begin("Controls")
+def draw_camera_selection_panel(state):
+    imgui.begin("Camera Selection")
 
     if imgui.button("Camera 1"):
         print("Camera 1")
