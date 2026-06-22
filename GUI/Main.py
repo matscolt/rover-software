@@ -22,7 +22,7 @@ def main():
         print("Could not initialize GLFW")
         return
 
-    window = glfw.create_window(1600, 1000, "Rover GUI", None, None)
+    window = glfw.create_window(1800, 900, "Rover GUI", None, None)
     glfw.make_context_current(window)
 
     imgui.create_context()
@@ -72,6 +72,10 @@ def main():
                 state.camera_channels = ch
 
         draw_layout(state)
+
+        if state.should_shutdown:
+            glfw.set_window_should_close(window, True)
+            continue
 
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)

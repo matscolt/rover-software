@@ -22,3 +22,4 @@ class RoverState:
 
         # Command/event state
         self.command = None
+        self.should_shutdown = False
