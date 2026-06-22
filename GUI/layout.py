@@ -1,7 +1,7 @@
 import imgui
 
 from panels.camera_panel import draw_camera_panel
-from panels.camera_selection_panel import draw_camera_selection_panel
+from panels.settings_panel import draw_settings_panel
 from panels.telemetry_panel import draw_telemetry_panel
 from panels.E_stop import draw_estop_panel
 
@@ -27,7 +27,7 @@ def draw_layout(state):
     # RIGHT MIDDLE: Controls
     imgui.set_next_window_position(left_width,  top_height * 0.5)
     imgui.set_next_window_size(right_width, top_height * 0.5)
-    draw_camera_selection_panel(state)
+    draw_settings_panel(state)
 
     # RIGHT BOTTOM: Telemetry
     imgui.set_next_window_position(left_width, top_height)

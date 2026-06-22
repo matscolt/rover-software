@@ -4,7 +4,7 @@ import OpenGL.GL as gl
 import numpy as np
 
 
-def load_texture_cv(path, flip_y=True):
+def load_texture_cv(path):
     """
     Load an image from disk (PNG/JPG/etc.) and upload it as an OpenGL texture.
     Returns: texture_id, width, height
@@ -13,8 +13,6 @@ def load_texture_cv(path, flip_y=True):
     if image is None:
         raise FileNotFoundError(f"Could not load texture: {path}")
 
-    if flip_y:
-        image = cv2.flip(image, 0)
 
     height, width = image.shape[:2]
 
@@ -96,7 +94,7 @@ def create_empty_texture(width, height, channels=3):
     return texture_id
 
 
-def update_texture_from_frame(texture_id, frame, flip_y=True):
+def update_texture_from_frame(texture_id, frame):
     """
     Update an existing OpenGL texture using an OpenCV frame.
     Returns: width, height, channels
@@ -104,8 +102,6 @@ def update_texture_from_frame(texture_id, frame, flip_y=True):
     if frame is None:
         raise ValueError("Frame is None")
 
-    if flip_y:
-        frame = cv2.flip(frame, 0)
 
     height, width = frame.shape[:2]
 
