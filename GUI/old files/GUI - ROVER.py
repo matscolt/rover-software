@@ -104,7 +104,10 @@ def main():
         nonlocal emergency_pressed
 
         padding = 10
-        imgui.set_next_window_position(window_width - uw - padding, padding)
+        button_x = window_width - uw - padding
+        button_y = padding
+        
+        imgui.set_next_window_position(button_x, button_y)
         imgui.set_next_window_size(uw, uh)
 
         imgui.push_style_var(imgui.STYLE_WINDOW_PADDING, (0, 0))
@@ -115,8 +118,13 @@ def main():
                     imgui.WINDOW_NO_RESIZE |
                     imgui.WINDOW_NO_MOVE |
                     imgui.WINDOW_NO_BACKGROUND |
-                    imgui.WINDOW_NO_SCROLLBAR |
-                    imgui.WINDOW_NO_BRING_TO_FRONT_ON_FOCUS)
+                    imgui.WINDOW_NO_SCROLLBAR)
+        
+        # Only bring to focus when mouse is hovering over the button
+        mouse_x, mouse_y = imgui.get_io().mouse_pos
+        if (button_x <= mouse_x <= button_x + uw and 
+            button_y <= mouse_y <= button_y + uh):
+            imgui.set_window_focus()
         
         tex = em_pressed if emergency_pressed else em_unpressed
         if imgui.image_button(tex, uw, uh):
@@ -186,114 +194,124 @@ def main():
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
 
         # ------------------ Menu ------------------
-        if view_state == "menu":
-            total_buttons = 3
-            total_height = button_height * total_buttons + spacing * (total_buttons - 1)
-            start_y = (window_height - total_height) * 0.5
-            center_x = (window_width - button_width) * 0.5
 
-            imgui.set_next_window_position(center_x, start_y)
-            imgui.set_next_window_size(button_width, total_height)
+        match view_state:
+            case "menu":
+                total_buttons = 3
+                total_height = button_height * total_buttons + spacing * (total_buttons - 1)
+                start_y = (window_height - total_height) * 0.5
+                center_x = (window_width - button_width) * 0.5
+
+                imgui.set_next_window_position(center_x, start_y)
+                imgui.set_next_window_size(button_width, total_height)
+
+                imgui.begin("MenuButtons", False,
+                            imgui.WINDOW_NO_TITLE_BAR |
+                            imgui.WINDOW_NO_RESIZE |
+                            imgui.WINDOW_NO_MOVE |
+                            imgui.WINDOW_NO_BACKGROUND |
+                            imgui.WINDOW_NO_SCROLLBAR)
+                
+                imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
+
+                if imgui.button("Operator Selection", width=button_width, height=button_height):
+                    view_state = "Operator_selection"
+
+                imgui.spacing()
+                if imgui.button("Settings", width=button_width, height=button_height):
+                    view_state = "Settings"
+                
+                imgui.spacing()
+                if imgui.button("Exit", width=button_width, height=button_height):
+                    print("Exiting application...")
+                    view_state = "Exit"
+                
+                imgui.pop_style_var()
+                imgui.end()
             
-            imgui.begin("MenuButtons", False,
-                        imgui.WINDOW_NO_TITLE_BAR |
-                        imgui.WINDOW_NO_RESIZE |
-                        imgui.WINDOW_NO_MOVE |
-                        imgui.WINDOW_NO_BACKGROUND |
-                        imgui.WINDOW_NO_SCROLLBAR)
-            imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
-
-            if imgui.button("Operator Selection", width=button_width, height=button_height):
-                view_state = "Operator_selection"
-
-            imgui.spacing()
-            if imgui.button("Settings", width=button_width, height=button_height):
-                view_state = "Settings"
-
-            imgui.spacing()
-            if imgui.button("Exit", width=button_width, height=button_height):
-                print("Exiting application...")
-                view_state = "Exit"
-
-            imgui.pop_style_var()
-            imgui.end()       
+            case "Exit":
+                glfw.set_window_should_close(window, True)
 
         # ------------------ Other Views ------------------
-        elif view_state == "Exit":
-            glfw.set_window_should_close(window, True)
 
-        elif view_state == "Settings":
-            total_buttons = 1
-            total_height = button_height * total_buttons + spacing * (total_buttons - 1)
-            start_y = (window_height - total_height) * 0.5
-            center_x = (window_width - button_width) * 0.5
+            case "Settings":
+                total_buttons = 1
+                total_height = button_height * total_buttons + spacing * (total_buttons - 1)
+                start_y = (window_height - total_height) * 0.5
+                center_x = (window_width - button_width) * 0.5
 
-            imgui.set_next_window_position(center_x, start_y)
-            imgui.set_next_window_size(button_width, total_height)
+                imgui.set_next_window_position(center_x, start_y)
+                imgui.set_next_window_size(button_width, total_height)
 
-            imgui.begin("Settings", False,
-                        imgui.WINDOW_NO_TITLE_BAR |
-                        imgui.WINDOW_NO_RESIZE |
-                        imgui.WINDOW_NO_MOVE |
-                        imgui.WINDOW_NO_BACKGROUND |
-                        imgui.WINDOW_NO_SCROLLBAR)
-            imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
+                imgui.begin("Settings", False,
+                            imgui.WINDOW_NO_TITLE_BAR |
+                            imgui.WINDOW_NO_RESIZE |
+                            imgui.WINDOW_NO_MOVE |
+                            imgui.WINDOW_NO_BACKGROUND |
+                            imgui.WINDOW_NO_SCROLLBAR)
+                
+                imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
 
-            if imgui.button("Back", width=button_width, height=button_height):
-                view_state = "menu"
+                if imgui.button("Back", width=button_width, height=button_height):
+                    view_state = "menu"
+                
+                imgui.pop_style_var()
+                imgui.end()
+            
+            case "Operator_selection":
+                total_buttons = 5
+                total_height = button_height * total_buttons + spacing * (total_buttons - 1)
+                start_y = (window_height - total_height) * 0.5
+                center_x = (window_width - button_width) * 0.5
 
-            imgui.pop_style_var()
-            imgui.end()
+                imgui.set_next_window_position(center_x, start_y)
+                imgui.set_next_window_size(button_width, total_height)
 
-        elif view_state == "Operator_selection":
-            total_buttons = 5
-            total_height = button_height * total_buttons + spacing * (total_buttons - 1)
-            start_y = (window_height - total_height) * 0.5
-            center_x = (window_width - button_width) * 0.5
+                imgui.begin("OperatorButtons", False,
+                            imgui.WINDOW_NO_TITLE_BAR |
+                            imgui.WINDOW_NO_RESIZE |
+                            imgui.WINDOW_NO_MOVE |
+                            imgui.WINDOW_NO_BACKGROUND |
+                            imgui.WINDOW_NO_SCROLLBAR)
+                imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
 
-            imgui.set_next_window_position(center_x, start_y)
-            imgui.set_next_window_size(button_width, total_height)
-
-            imgui.begin("OperatorButtons", False,
-                        imgui.WINDOW_NO_TITLE_BAR |
-                        imgui.WINDOW_NO_RESIZE |
-                        imgui.WINDOW_NO_MOVE |
-                        imgui.WINDOW_NO_BACKGROUND |
-                        imgui.WINDOW_NO_SCROLLBAR)
-
-            imgui.push_style_var(imgui.STYLE_FRAME_ROUNDING, 0.0)
-
-            if imgui.button(operator_1, width=button_width, height=button_height):
-                view_state = operator_1
-
-            imgui.spacing()
-            if imgui.button(operator_2, width=button_width, height=button_height):
-                view_state = operator_2
-
-            imgui.spacing()
-            if imgui.button(operator_3, width=button_width, height=button_height):
-                view_state = operator_3
-
-            imgui.spacing()
-            if imgui.button(operator_4, width=button_width, height=button_height):
-                view_state = operator_4
-
-            imgui.spacing()
-            if imgui.button("Back", width=button_width, height=button_height):
-                view_state = "menu"
-
-            imgui.pop_style_var()
-            imgui.end()
-
-        elif view_state == operator_1:
-            draw_operator_feed(operator_1)
-        elif view_state == operator_2:
-            draw_operator_feed(operator_2)
-        elif view_state == operator_3:
-            draw_operator_feed(operator_3)
-        elif view_state == operator_4:
-            draw_operator_feed(operator_4)
-
+                if imgui.button(operator_1, width=button_width, height=button_height):
+                    view_state = operator_1
+                
+                imgui.spacing()
+                if imgui.button(operator_2, width=button_width, height=button_height):
+                    view_state = operator_2
+                
+                imgui.spacing()
+                if imgui.button(operator_3, width=button_width, height=button_height):
+                    view_state = operator_3
+                
+                imgui.spacing()
+                if imgui.button(operator_4, width=button_width, height=button_height):
+                    view_state = operator_4
+                
+                imgui.spacing()
+                if imgui.button("Back", width=button_width, height=button_height):
+                    view_state = "menu"
+                
+                imgui.pop_style_var()
+                imgui.end()
+            
+            case "Rover Driver":
+                draw_operator_feed(operator_1)
+            
+            case "Manipulator Operator":
+                draw_operator_feed(operator_2)
+            
+            case "Observer":
+                draw_operator_feed(operator_3)
+            
+            case "Operator 4":
+                draw_operator_feed(operator_4)
+            
+            case _:
+                pass
+    
         # ------------------ Draw Emergency Button ------------------
         draw_global_emergency_button()
 

@@ -1,10 +1,10 @@
 --- FIX ---
-E-stop doesnt work within operator feeds
 
 --- NOW ---
 write the config file and add the ability to change settings
 multiple camera feeds(test) under one operator
 Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
+
 
 --- LATER ---
 camera feed
@@ -17,3 +17,5 @@ find ud af hvordan docker virker (kan undgå installering af ubuntu)
 Created GUI script 0.1
 image on e-stop
 ability to switch e-stop on and off
+E-stop doesnt work within operator feeds
+Change the else if statements in the code to switch cases for better streamlining of the code
