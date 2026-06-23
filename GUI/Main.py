@@ -17,28 +17,59 @@ from core.rover_state import RoverState
 BASE_DIR = Path(__file__).resolve().parent
 
 
+def clear_camera_state(state, camera_index=None, status="Camera not found"):
+    # Remove old texture so the panel doesn't show a frozen frame
+    if state.camera_texture is not None:
+        delete_texture(state.camera_texture)
+        state.camera_texture = None
+
+    state.camera_width = 0
+    state.camera_height = 0
+    state.camera_channels = 3
+    state.camera_status = status
+
+    # Important:
+    # mark this camera index as the current attempted one,
+    # even though it failed, so the code does not retry every frame
+    if camera_index is not None:
+        state.active_camera = camera_index
+
+
 def open_camera(camera_index, state):
-    cap = cv2.VideoCapture(camera_index)
+    # On Windows, CAP_DSHOW often avoids noisy backend probing
+    cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
 
     if not cap.isOpened():
-        state.camera_status = f"Failed to open camera {camera_index}"
+        clear_camera_state(
+            state,
+            camera_index=camera_index,
+            status=f"Camera {camera_index} not found"
+        )
         return None
 
     ret, frame = cap.read()
-    if not ret:
-        state.camera_status = f"Failed to read from camera {camera_index}"
+    if not ret or frame is None:
         cap.release()
+        clear_camera_state(
+            state,
+            camera_index=camera_index,
+            status=f"Camera {camera_index} not found"
+        )
         return None
 
     h, w = frame.shape[:2]
     channels = 1 if len(frame.shape) == 2 else frame.shape[2]
 
     if channels not in (3, 4):
-        state.camera_status = f"Unsupported format from camera {camera_index}"
         cap.release()
+        clear_camera_state(
+            state,
+            camera_index=camera_index,
+            status=f"Unsupported format from camera {camera_index}"
+        )
         return None
 
-    # Recreate camera texture if needed
+    # Recreate camera texture cleanly
     if state.camera_texture is not None:
         delete_texture(state.camera_texture)
 
@@ -66,6 +97,7 @@ def main():
         return
 
     glfw.make_context_current(window)
+    glfw.swap_interval(1)
 
     imgui.create_context()
     impl = GlfwRenderer(window)
@@ -80,31 +112,23 @@ def main():
         str(BASE_DIR / "assets" / "estop_unpressed.png")
     )
 
-    # Open camera
-    cap = open_camera(state.requested_camera, state)  # default webcam
-    if not cap.isOpened():
-        print("Could not open camera")
-        cap = None
-    else:
-        ret, frame = cap.read()
-        if ret:
-            h, w = frame.shape[:2]
-            state.camera_width = w
-            state.camera_height = h
-            state.camera_channels = 3
-            state.camera_texture = create_empty_texture(w, h, channels=3)
-            update_texture_from_frame(state.camera_texture, frame)
-        else:
-            print("Could not read first camera frame")
-            cap.release()
-            cap = None
+    # Open initial camera
+    cap = open_camera(state.requested_camera, state)
+    if cap is None:
+        print(state.camera_status)
 
     while not glfw.window_should_close(window):
         glfw.poll_events()
         impl.process_inputs()
         imgui.new_frame()
 
-        # Update camera texture every frame
+        # Camera switching
+        if state.requested_camera != state.active_camera:
+            if cap is not None:
+                cap.release()
+            cap = open_camera(state.requested_camera, state)
+
+        # Update active camera feed
         if cap is not None and state.camera_texture is not None:
             ret, frame = cap.read()
             if ret:
@@ -112,12 +136,13 @@ def main():
                 state.camera_width = w
                 state.camera_height = h
                 state.camera_channels = ch
+            else:
+                state.camera_status = f"Lost feed from camera {state.active_camera}"
 
         draw_layout(state)
 
         if state.should_shutdown:
             glfw.set_window_should_close(window, True)
-            continue
 
         gl.glClearColor(0.1, 0.1, 0.1, 1.0)
         gl.glClear(gl.GL_COLOR_BUFFER_BIT)
@@ -126,7 +151,6 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    # Cleanup
     if cap is not None:
         cap.release()
 
