@@ -33,12 +33,12 @@ def draw_layout(state):
     imgui.set_next_window_size(right_width, third_height-second_height)
     draw_settings_panel(state)
 
-    # RIGHT 3.: Telemetry
+    # RIGHT 3.: icon
     imgui.set_next_window_position(left_width, third_height)
     imgui.set_next_window_size(right_width, fourth_height-third_height)
-    draw_telemetry_panel(state)
+    draw_rover_icon_panel(state)
 
-    # RIGHT 4.: icon
-    #imgui.set_next_window_position(left_width, third_height)
-    #imgui.set_next_window_size(right_width, fourth_height-third_height)
-    #draw_rover_icon_panel(state)
+    # RIGHT 4.: Telemetry
+    imgui.set_next_window_position(left_width, fourth_height)
+    imgui.set_next_window_size(right_width, fourth_height-third_height)
+    draw_telemetry_panel(state)

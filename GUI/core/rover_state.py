@@ -26,6 +26,21 @@ class RoverState:
         self.camera_status = "Not initialized"
         self.available_cameras = [0, 1, 2]
 
+        
+        # Rover icon textures
+        self.front_cam_icon_tex = None
+        self.front_cam_icon_w = 0
+        self.front_cam_icon_h = 0
+
+        self.back_cam_icon_tex = None
+        self.back_cam_icon_w = 0
+        self.back_cam_icon_h = 0
+
+        self.manipulator_cam_icon_tex = None
+        self.manipulator_cam_icon_w = 0
+        self.manipulator_cam_icon_h = 0
+
+
         # Command / app state
         self.command = None
         self.should_shutdown = False
