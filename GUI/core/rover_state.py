@@ -1,4 +1,4 @@
-# core/rover_state.py
+
 class RoverState:
     def __init__(self):
         self.speed = 0.0
@@ -14,12 +14,18 @@ class RoverState:
         self.em_unpressed_w = 0
         self.em_unpressed_h = 0
 
-        # Camera
+        # Camera display
         self.camera_texture = None
         self.camera_width = 0
         self.camera_height = 0
         self.camera_channels = 3
 
-        # Command/event state
+        # Camera switching
+        self.active_camera = None
+        self.requested_camera = 0
+        self.camera_status = "Not initialized"
+        self.available_cameras = [0, 1, 2]
+
+        # Command / app state
         self.command = None
         self.should_shutdown = False

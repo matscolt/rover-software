@@ -17,12 +17,54 @@ from core.rover_state import RoverState
 BASE_DIR = Path(__file__).resolve().parent
 
 
+def open_camera(camera_index, state):
+    cap = cv2.VideoCapture(camera_index)
+
+    if not cap.isOpened():
+        state.camera_status = f"Failed to open camera {camera_index}"
+        return None
+
+    ret, frame = cap.read()
+    if not ret:
+        state.camera_status = f"Failed to read from camera {camera_index}"
+        cap.release()
+        return None
+
+    h, w = frame.shape[:2]
+    channels = 1 if len(frame.shape) == 2 else frame.shape[2]
+
+    if channels not in (3, 4):
+        state.camera_status = f"Unsupported format from camera {camera_index}"
+        cap.release()
+        return None
+
+    # Recreate camera texture if needed
+    if state.camera_texture is not None:
+        delete_texture(state.camera_texture)
+
+    state.camera_texture = create_empty_texture(w, h, channels=channels)
+    update_texture_from_frame(state.camera_texture, frame)
+
+    state.camera_width = w
+    state.camera_height = h
+    state.camera_channels = channels
+    state.active_camera = camera_index
+    state.camera_status = f"Camera {camera_index} active"
+
+    return cap
+
+
 def main():
     if not glfw.init():
         print("Could not initialize GLFW")
         return
 
     window = glfw.create_window(1800, 900, "Rover GUI", None, None)
+    if not window:
+        print("Could not create GLFW window")
+        glfw.terminate()
+        return
+
     glfw.make_context_current(window)
 
     imgui.create_context()
@@ -39,7 +81,7 @@ def main():
     )
 
     # Open camera
-    cap = cv2.VideoCapture(0)  # default webcam
+    cap = open_camera(state.requested_camera, state)  # default webcam
     if not cap.isOpened():
         print("Could not open camera")
         cap = None
