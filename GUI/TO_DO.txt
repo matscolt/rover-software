@@ -2,17 +2,16 @@
 
 --- NOW ---
 write the config file and add the ability to change settings
-multiple camera feeds(test) under one operator
 Hvordan forbinder vi til ROS2 netværket og hvor subcriber vi til de kamera vi skal bruge
+camera feed
 
 
 --- LATER ---
-camera feed
-move operator code to each individual file
-dropdown menu for multiple camera selection (changes the config file)
-design for each operator
+design of presets for each operator
 
 --- TASKS DONE ---
+ability to change cameras
+multiple camera feeds(test) under one operator
 find ud af hvordan docker virker (kan undgå installering af ubuntu)
 Created GUI script 0.1
 image on e-stop
