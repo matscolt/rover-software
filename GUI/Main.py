@@ -5,7 +5,6 @@ import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
 from config.settings_manager import load_config, save_config
-
 from rendering.textures import (
     load_texture_cv,
     create_empty_texture,
@@ -29,7 +28,6 @@ def clear_camera_state(state, camera_index=None, status="Camera not found"):
     state.camera_channels = 3
     state.camera_status = status
 
-    # Important:
     # mark this camera index as the current attempted one,
     # even though it failed, so the code does not retry every frame
     if camera_index is not None:
@@ -100,6 +98,7 @@ def main():
         None,
         None
     )
+
     if not window:
         print("Could not create GLFW window")
         glfw.terminate()
@@ -127,15 +126,12 @@ def main():
     state.front_cam_icon_tex, state.front_cam_icon_w, state.front_cam_icon_h = load_texture_cv(
         str(BASE_DIR / "assets" / "front_cam.png")
     )
-
     state.back_cam_icon_tex, state.back_cam_icon_w, state.back_cam_icon_h = load_texture_cv(
         str(BASE_DIR / "assets" / "back_cam.png")
     )
-
     state.manipulator_cam_icon_tex, state.manipulator_cam_icon_w, state.manipulator_cam_icon_h = load_texture_cv(
         str(BASE_DIR / "assets" / "manipulator_cam.png")
     )
-
 
     # Open initial camera
     cap = open_camera(state.requested_camera, state)
@@ -147,7 +143,7 @@ def main():
         impl.process_inputs()
         imgui.new_frame()
 
-        #keybinds
+        # keybinds
         handle_keybinds(window, state)
 
         # Camera switching
@@ -178,6 +174,13 @@ def main():
         imgui.render()
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
+
+    # Save persistent settings before shutdown
+    width, height = glfw.get_window_size(window)
+    config.window.width = width
+    config.window.height = height
+    config.camera.default_camera = state.requested_camera
+    save_config(config)
 
     if cap is not None:
         cap.release()
