@@ -8,10 +8,10 @@
     "layout": {
         "left_width_ratio": 0.75,
         "right_width_ratio": 0.25,
-        "estop_height_ratio": 0.30,
-        "settings_height_ratio": 0.20,
-        "telemetry_height_ratio": 0.30,
-        "rover_icon_height_ratio": 0.20
+        "estop_height_ratio": 0.3,
+        "settings_height_ratio": 0.2,
+        "telemetry_height_ratio": 0.3,
+        "rover_icon_height_ratio": 0.2
     },
     "panels": {
         "show_camera": true,

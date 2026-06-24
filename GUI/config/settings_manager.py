@@ -2,7 +2,6 @@ import copy
 import json
 from pathlib import Path
 import imgui
-
 from core.app_config import (
     AppConfig,
     WindowConfig,
@@ -67,12 +66,14 @@ def begin_settings_popup(state):
 
 
 def draw_settings_popup(state):
-    begin_settings_popup(state)
+    if state.request_settings_popup:
+        state.edit_config = copy.deepcopy(state.config)
+        imgui.open_popup("Settings menu")
+        state.request_settings_popup = False
 
-    viewport_w, viewport_h = imgui.get_io().display_size
-    imgui.set_next_window_size(viewport_w * 0.70, viewport_h * 0.80, condition=imgui.ONCE)
+    imgui.set_next_window_size(900, 700, condition=imgui.ONCE)
 
-    opened, _ = imgui.begin_popup_modal("Settings", True)
+    opened, _ = imgui.begin_popup_modal("Settings menu", True)
     state.settings_popup_open = opened
 
     if not opened:
