@@ -1,24 +1,10 @@
 import imgui
+from panels.shutdown_popup import draw_shutdown_popup
 
 def draw_settings_panel(state):
     imgui.begin("Settings")
     if imgui.button("Shut Down GUI"):
-        imgui.open_popup("Confirm Shutdown")
-
-    if imgui.begin_popup_modal("Confirm Shutdown", True)[0]:
-        imgui.text("Close the GUI?")
-        imgui.spacing()
-
-        if imgui.button("Yes", 100, 35):
-            state.should_shutdown = True
-            imgui.close_current_popup()
-
-        imgui.same_line()
-
-        if imgui.button("No", 100, 35):
-            imgui.close_current_popup()
-
-        imgui.end_popup()
+        state.request_shutdown_popup = True
     
     imgui.text("Camera Selection")
 

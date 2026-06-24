@@ -5,6 +5,11 @@ class RoverState:
         self.battery = 100
         self.temperature = 25.0
 
+        #shutdown
+        self.request_shutdown_popup = False
+        self.shutdown_popup_open = False
+        self.shutdown_popup_choice = None
+        
         # E-stop
         self.emergency_pressed = False
         self.em_pressed_tex = None
@@ -44,3 +49,7 @@ class RoverState:
         # Command / app state
         self.command = None
         self.should_shutdown = False
+
+        # Keyboard state
+        self.prev_keys = {}
+

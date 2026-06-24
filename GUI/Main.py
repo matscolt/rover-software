@@ -13,9 +13,9 @@ from rendering.textures import (
 )
 from layout import draw_layout
 from core.rover_state import RoverState
+from core.input_handler import handle_keybinds
 
 BASE_DIR = Path(__file__).resolve().parent
-
 
 def clear_camera_state(state, camera_index=None, status="Camera not found"):
     # Remove old texture so the panel doesn't show a frozen frame
@@ -111,7 +111,7 @@ def main():
     state.em_unpressed_tex, state.em_unpressed_w, state.em_unpressed_h = load_texture_cv(
         str(BASE_DIR / "assets" / "estop_unpressed.png")
     )
-        
+
     # Rover icon textures
     state.front_cam_icon_tex, state.front_cam_icon_w, state.front_cam_icon_h = load_texture_cv(
         str(BASE_DIR / "assets" / "front_cam.png")
@@ -135,6 +135,9 @@ def main():
         glfw.poll_events()
         impl.process_inputs()
         imgui.new_frame()
+
+        #keybinds
+        handle_keybinds(window, state)
 
         # Camera switching
         if state.requested_camera != state.active_camera:
