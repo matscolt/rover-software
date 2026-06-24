@@ -5,10 +5,6 @@ import numpy as np
 
 
 def load_texture_cv(path):
-    """
-    Load an image from disk (PNG/JPG/etc.) and upload it as an OpenGL texture.
-    Returns: texture_id, width, height
-    """
     image = cv2.imread(path, cv2.IMREAD_UNCHANGED)
     if image is None:
         raise FileNotFoundError(f"Could not load texture: {path}")
@@ -102,6 +98,7 @@ def update_texture_from_frame(texture_id, frame):
     if frame is None:
         raise ValueError("Frame is None")
 
+    frame = cv2.flip(frame, 1)
 
     height, width = frame.shape[:2]
 

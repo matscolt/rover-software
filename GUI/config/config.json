@@ -1,9 +1,9 @@
 {
     "window": {
-        "width": 1200,
-        "height": 800,
+        "width": 1920,
+        "height": 1080,
         "title": "Rover GUI",
-        "fullscreen": false
+        "fullscreen": true
     },
     "layout": {
         "left_width_ratio": 0.75,

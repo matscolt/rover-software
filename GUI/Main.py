@@ -91,13 +91,26 @@ def main():
         print("Could not initialize GLFW")
         return
 
-    window = glfw.create_window(
-        config.window.width,
-        config.window.height,
-        config.window.title,
-        None,
-        None
-    )
+    if config.window.fullscreen:
+        monitor = glfw.get_primary_monitor()
+        mode = glfw.get_video_mode(monitor)
+
+        window = glfw.create_window(
+            mode.size.width,
+            mode.size.height,
+            config.window.title,
+            monitor,
+            None
+        )
+    else:
+        window = glfw.create_window(
+            config.window.width,
+            config.window.height,
+            config.window.title,
+            None,
+            None
+        )
+
 
     if not window:
         print("Could not create GLFW window")
@@ -175,10 +188,12 @@ def main():
         impl.render(imgui.get_draw_data())
         glfw.swap_buffers(window)
 
-    # Save persistent settings before shutdown
-    width, height = glfw.get_window_size(window)
-    config.window.width = width
-    config.window.height = height
+    # Save persistent settings before shutdown    
+    if not config.window.fullscreen:
+        width, height = glfw.get_window_size(window)
+        config.window.width = width
+        config.window.height = height
+
     save_config(config)
 
     if cap is not None:
@@ -187,6 +202,7 @@ def main():
     delete_texture(state.camera_texture)
     delete_texture(state.em_pressed_tex)
     delete_texture(state.em_unpressed_tex)
+
 
     impl.shutdown()
     glfw.terminate()
