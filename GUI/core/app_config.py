@@ -2,10 +2,10 @@ from dataclasses import dataclass, field
 
 @dataclass
 class WindowConfig:
-    width: int = 1800
-    height: int = 900
+    width: int = 1920
+    height: int = 1080
     title: str = "Rover GUI"
-    fullscreen: bool = False
+    fullscreen: bool = True
 
 @dataclass
 class LayoutConfig:

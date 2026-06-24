@@ -17,7 +17,7 @@
         "show_camera": true,
         "show_estop": true,
         "show_settings": true,
-        "show_telemetry": true,
+        "show_telemetry": false,
         "show_rover_icon": true
     },
     "camera": {
