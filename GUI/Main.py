@@ -4,6 +4,7 @@ import glfw
 import imgui
 import OpenGL.GL as gl
 from imgui.integrations.glfw import GlfwRenderer
+from config.settings_manager import load_config, save_config
 
 from rendering.textures import (
     load_texture_cv,
@@ -86,11 +87,19 @@ def open_camera(camera_index, state):
 
 
 def main():
+    config = load_config()
+    
     if not glfw.init():
         print("Could not initialize GLFW")
         return
 
-    window = glfw.create_window(1800, 900, "Rover GUI", None, None)
+    window = glfw.create_window(
+        config.window.width,
+        config.window.height,
+        config.window.title,
+        None,
+        None
+    )
     if not window:
         print("Could not create GLFW window")
         glfw.terminate()
@@ -103,6 +112,8 @@ def main():
     impl = GlfwRenderer(window)
 
     state = RoverState()
+    state.config = config
+    state.requested_camera = config.camera.default_camera
 
     # Load E-stop textures once
     state.em_pressed_tex, state.em_pressed_w, state.em_pressed_h = load_texture_cv(

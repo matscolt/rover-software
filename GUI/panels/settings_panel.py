@@ -1,10 +1,16 @@
 import imgui
 from panels.shutdown_popup import draw_shutdown_popup
+from core.app_config import AppConfig
+
 
 def draw_settings_panel(state):
     imgui.begin("Settings")
     if imgui.button("Shut Down GUI"):
         state.request_shutdown_popup = True
+    imgui.same_line()
+
+    if imgui.button("Reset to Defaults"):
+        state.config = AppConfig()
     
     imgui.text("Camera Selection")
 
