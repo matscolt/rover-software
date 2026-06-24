@@ -159,6 +159,27 @@ def main():
         # keybinds
         handle_keybinds(window, state)
 
+        
+        if state.request_apply_settings:
+            state.request_apply_settings = False
+
+            if state.pending_window_resize:
+                glfw.set_window_size(window, state.config.window.width, state.config.window.height)
+                state.pending_window_resize = False
+
+            if state.pending_camera_reconfigure:
+                state.pending_camera_reconfigure = False
+
+                if cap is not None:
+                    cap.release()
+                    cap = None
+
+                cap = open_camera(state.requested_camera, state)
+
+                if cap is not None:
+                    cap.set(cv2.CAP_PROP_FRAME_WIDTH, state.config.camera.width)
+                    cap.set(cv2.CAP_PROP_FRAME_HEIGHT, state.config.camera.height)
+
         # Camera switching
         if state.requested_camera != state.active_camera:
             if cap is not None:

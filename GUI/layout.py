@@ -6,6 +6,7 @@ from panels.telemetry_panel import draw_telemetry_panel
 from panels.rover_icon_panel import draw_rover_icon_panel
 from panels.E_stop import draw_estop_panel
 from panels.shutdown_popup import draw_shutdown_popup
+from config.settings_manager import draw_settings_popup
 
 def draw_layout(state):
     width, height = imgui.get_io().display_size
@@ -47,3 +48,5 @@ def draw_layout(state):
         draw_rover_icon_panel(state)
 
     draw_shutdown_popup(state)
+
+    draw_settings_popup(state)

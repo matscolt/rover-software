@@ -1,6 +1,14 @@
 from dataclasses import dataclass, field
 
 @dataclass
+class KeybindsConfig:
+    camera_1: str = "1"
+    camera_2: str = "2"
+    camera_3: str = "3"
+    shutdown_popup: str = "ESCAPE"
+    estop: str = "SPACE"
+
+@dataclass
 class WindowConfig:
     width: int = 1920
     height: int = 1080
@@ -27,6 +35,9 @@ class PanelsConfig:
 @dataclass
 class CameraConfig:
     default_camera: int = 0
+    width: int = 1280
+    height: int = 720
+
 
 @dataclass
 class AppConfig:
@@ -34,3 +45,4 @@ class AppConfig:
     layout: LayoutConfig = field(default_factory=LayoutConfig)
     panels: PanelsConfig = field(default_factory=PanelsConfig)
     camera: CameraConfig = field(default_factory=CameraConfig)
+    keybinds: KeybindsConfig = field(default_factory=KeybindsConfig)

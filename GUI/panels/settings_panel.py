@@ -9,9 +9,9 @@ def draw_settings_panel(state):
         state.request_shutdown_popup = True
     imgui.same_line()
 
-    if imgui.button("Reset to Defaults"):
-        state.config = AppConfig()
-    
+    if imgui.button("Open Settings"):
+        state.request_settings_popup = True
+
     imgui.text("Camera Selection")
 
     if imgui.button("Camera front"):
