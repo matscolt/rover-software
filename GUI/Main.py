@@ -179,7 +179,6 @@ def main():
     width, height = glfw.get_window_size(window)
     config.window.width = width
     config.window.height = height
-    config.camera.default_camera = state.requested_camera
     save_config(config)
 
     if cap is not None:
