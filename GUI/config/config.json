@@ -1,17 +1,17 @@
 {
     "window": {
         "width": 1800,
-        "height": 900,
+        "height": 898,
         "title": "Rover GUI",
-        "fullscreen": false
+        "fullscreen": true
     },
     "layout": {
         "left_width_ratio": 0.75,
         "right_width_ratio": 0.25,
-        "estop_height_ratio": 0.3,
-        "settings_height_ratio": 0.2,
-        "telemetry_height_ratio": 0.3,
-        "rover_icon_height_ratio": 0.2
+        "estop_height_ratio": 0.30000001192092896,
+        "settings_height_ratio": 0.20000000298023224,
+        "telemetry_height_ratio": 0.30000001192092896,
+        "rover_icon_height_ratio": 0.19999997317790985
     },
     "panels": {
         "show_camera": true,

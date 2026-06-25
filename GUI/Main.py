@@ -159,7 +159,7 @@ def main():
         # keybinds
         handle_keybinds(window, state)
 
-        
+
         if state.request_apply_settings:
             state.request_apply_settings = False
 
@@ -215,7 +215,7 @@ def main():
         config.window.width = width
         config.window.height = height
 
-    save_config(config)
+    save_config(state.config)
 
     if cap is not None:
         cap.release()
