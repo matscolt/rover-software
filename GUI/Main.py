@@ -37,6 +37,9 @@ def clear_camera_state(state, camera_index=None, status="Camera not found"):
 def open_camera(camera_index, state):
     # On Windows, CAP_DSHOW often avoids noisy backend probing
     cap = cv2.VideoCapture(camera_index, cv2.CAP_DSHOW)
+    if not cap.isOpened():
+        # Try again with default backend if DSHOW fails
+        cap = cv2.VideoCapture(camera_index)
 
     if not cap.isOpened():
         clear_camera_state(
