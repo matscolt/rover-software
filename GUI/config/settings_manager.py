@@ -84,7 +84,7 @@ def draw_settings_popup(state):
     imgui.text("Window")
     changed, cfg.window.width = imgui.input_int("Window Width", cfg.window.width)
     changed, cfg.window.height = imgui.input_int("Window Height", cfg.window.height)
-    changed, cfg.window.fullscreen = imgui.checkbox("Start Fullscreen", cfg.window.fullscreen)
+    changed, cfg.window.fullscreen = imgui.checkbox("Fullscreen", cfg.window.fullscreen)
 
     imgui.separator()
     imgui.text("Layout Ratios (0.0 to 1.0)")
@@ -120,7 +120,6 @@ def draw_settings_popup(state):
     imgui.separator()
     imgui.text("Panels")
     changed, cfg.panels.show_camera = imgui.checkbox("Show Camera Panel", cfg.panels.show_camera)
-    changed, cfg.panels.show_estop = imgui.checkbox("Show E-stop Panel", cfg.panels.show_estop)
     changed, cfg.panels.show_settings = imgui.checkbox("Show Settings Panel", cfg.panels.show_settings)
     changed, cfg.panels.show_telemetry = imgui.checkbox("Show Telemetry Panel", cfg.panels.show_telemetry)
     changed, cfg.panels.show_rover_icon = imgui.checkbox("Show Rover Icon Panel", cfg.panels.show_rover_icon)

@@ -3,7 +3,7 @@
         "width": 1800,
         "height": 900,
         "title": "Rover GUI",
-        "fullscreen": true
+        "fullscreen": false
     },
     "layout": {
         "left_width_ratio": 0.75,
@@ -30,6 +30,7 @@
         "camera_2": "2",
         "camera_3": "3",
         "shutdown_popup": "ESCAPE",
-        "estop": "SPACE"
+        "estop": "SPACE",
+        "unlock_estop": "E"
     }
 }

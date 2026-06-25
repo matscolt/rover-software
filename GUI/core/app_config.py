@@ -7,6 +7,7 @@ class KeybindsConfig:
     camera_3: str = "3"
     shutdown_popup: str = "ESCAPE"
     estop: str = "SPACE"
+    unlock_estop: str = "E"
 
 @dataclass
 class WindowConfig:

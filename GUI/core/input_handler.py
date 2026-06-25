@@ -7,6 +7,13 @@ def is_key_pressed_once(window, key, state):
     return current and not previous
 
 
+def get_key_code(name):
+    try:
+        return getattr(glfw, f"KEY_{name.upper()}")
+    except AttributeError:
+        return None
+
+
 def handle_keybinds(window, state):
     # If shutdown popup is open, only allow popup-related keys
     if state.shutdown_popup_open:
@@ -22,23 +29,28 @@ def handle_keybinds(window, state):
 
         return
 
+    key_1 = get_key_code(state.config.keybinds.camera_1)
+    key_2 = get_key_code(state.config.keybinds.camera_2)
+    key_3 = get_key_code(state.config.keybinds.camera_3)
+    key_unlock_estop = get_key_code(state.config.keybinds.unlock_estop)
+    key_estop = get_key_code(state.config.keybinds.estop)
+
     # Camera selection
-    if is_key_pressed_once(window, glfw.KEY_1, state):
+    if key_1 and is_key_pressed_once(window, key_1, state):
         state.requested_camera = 0
 
-    if is_key_pressed_once(window, glfw.KEY_2, state):
+    if key_2 and is_key_pressed_once(window, key_2, state):
         state.requested_camera = 1
 
-    if is_key_pressed_once(window, glfw.KEY_3, state):
+    if key_3 and is_key_pressed_once(window, key_3, state):
         state.requested_camera = 2
 
-    # Emergency stop
-    if is_key_pressed_once(window, glfw.KEY_SPACE, state):
+    if key_estop and is_key_pressed_once(window, key_estop, state):
         state.emergency_pressed = True
         state.command = "STOP_ALL"
 
     # Toggle E-stop
-    if is_key_pressed_once(window, glfw.KEY_E, state):
+    if is_key_pressed_once(window, key_unlock_estop, state):
         state.emergency_pressed = not state.emergency_pressed
 
     # Shut down GUI popup
