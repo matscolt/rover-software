@@ -163,11 +163,35 @@ def main():
         handle_keybinds(window, state)
 
 
+                
         if state.request_apply_settings:
             state.request_apply_settings = False
 
             if state.pending_window_resize:
-                glfw.set_window_size(window, state.config.window.width, state.config.window.height)
+                if state.config.window.fullscreen:
+                    monitor = glfw.get_primary_monitor()
+                    mode = glfw.get_video_mode(monitor)
+
+                    glfw.set_window_monitor(
+                        window,
+                        monitor,
+                        0,
+                        0,
+                        mode.size.width,
+                        mode.size.height,
+                        mode.refresh_rate
+                    )
+                else:
+                    glfw.set_window_monitor(
+                        window,
+                        None,
+                        100,
+                        100,
+                        state.config.window.width,
+                        state.config.window.height,
+                        0
+                    )
+
                 state.pending_window_resize = False
 
             if state.pending_camera_reconfigure:

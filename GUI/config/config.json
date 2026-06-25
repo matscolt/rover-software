@@ -1,9 +1,9 @@
 {
     "window": {
-        "width": 1800,
-        "height": 898,
+        "width": 1500,
+        "height": 900,
         "title": "Rover GUI",
-        "fullscreen": true
+        "fullscreen": false
     },
     "layout": {
         "left_width_ratio": 0.75,
@@ -15,7 +15,7 @@
     },
     "panels": {
         "show_camera": true,
-        "show_estop": true,
+        "show_estop": false,
         "show_settings": true,
         "show_telemetry": true,
         "show_rover_icon": true
