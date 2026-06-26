@@ -1,7 +1,4 @@
 import imgui
-from panels.shutdown_popup import draw_shutdown_popup
-from core.app_config import AppConfig
-
 
 def draw_settings_panel(state):
     imgui.begin("Settings")
@@ -29,5 +26,9 @@ def draw_settings_panel(state):
     if imgui.button("Camera manipulator"):
         print("Camera manipulator")
         state.requested_camera = 2
+
+    imgui.text(f"Requested camera: {state.requested_camera}")
+
+    
 
     imgui.end()

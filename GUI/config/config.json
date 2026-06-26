@@ -1,21 +1,43 @@
 {
     "window": {
-        "width": 1500,
-        "height": 900,
+        "width": 1920,
+        "height": 1080,
         "title": "Rover GUI",
-        "fullscreen": false
+        "fullscreen": true
     },
     "layout": {
         "left_width_ratio": 0.75,
         "right_width_ratio": 0.25,
-        "estop_height_ratio": 0.30000001192092896,
-        "settings_height_ratio": 0.20000000298023224,
-        "telemetry_height_ratio": 0.30000001192092896,
-        "rover_icon_height_ratio": 0.19999997317790985
+        "estop_height_ratio": 0.3,
+        "settings_height_ratio": 0.2,
+        "telemetry_height_ratio": 0.3,
+        "rover_icon_height_ratio": 0.2,
+        "panels": {
+            "camera": {
+                "row": 2,
+                "col": 0
+            },
+            "estop": {
+                "row": 0,
+                "col": 1
+            },
+            "settings": {
+                "row": 1,
+                "col": 1
+            },
+            "telemetry": {
+                "row": 2,
+                "col": 1
+            },
+            "rover_icon": {
+                "row": 3,
+                "col": 1
+            }
+        }
     },
     "panels": {
         "show_camera": true,
-        "show_estop": false,
+        "show_estop": true,
         "show_settings": true,
         "show_telemetry": true,
         "show_rover_icon": true

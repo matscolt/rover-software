@@ -18,6 +18,7 @@ class WindowConfig:
 
 @dataclass
 class LayoutConfig:
+    # Old ratio-based layout fields (kept temporarily for compatibility)
     left_width_ratio: float = 0.75
     right_width_ratio: float = 0.25
     estop_height_ratio: float = 0.30
@@ -25,6 +26,14 @@ class LayoutConfig:
     telemetry_height_ratio: float = 0.30
     rover_icon_height_ratio: float = 0.20
 
+    # New grid-based layout
+    panels: dict = field(default_factory=lambda: {
+        "camera": {"row": 0, "col": 0},
+        "estop": {"row": 0, "col": 1},
+        "settings": {"row": 1, "col": 1},
+        "telemetry": {"row": 2, "col": 1},
+        "rover_icon": {"row": 3, "col": 1},
+    })
 @dataclass
 class PanelsConfig:
     show_camera: bool = True

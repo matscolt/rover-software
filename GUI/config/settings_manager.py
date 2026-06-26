@@ -53,11 +53,6 @@ def ensure_edit_config(state):
     if state.edit_config is None:
         state.edit_config = copy.deepcopy(state.config)
 
-
-def clamp01(value: float) -> float:
-    return max(0.0, min(1.0, value))
-
-
 def begin_settings_popup(state):
     if state.request_settings_popup:
         ensure_edit_config(state)
@@ -87,35 +82,23 @@ def draw_settings_popup(state):
     changed, cfg.window.fullscreen = imgui.checkbox("Fullscreen", cfg.window.fullscreen)
 
     imgui.separator()
-    imgui.text("Layout Ratios (0.0 to 1.0)")
+    imgui.text("Panel Placement")
+    imgui.text("Columns are capped at 2 (0 or 1).")
 
-    changed, cfg.layout.left_width_ratio = imgui.slider_float(
-        "Left Width Ratio", cfg.layout.left_width_ratio, 0.0, 1.0
-    )
-    cfg.layout.left_width_ratio = clamp01(cfg.layout.left_width_ratio)
-    cfg.layout.right_width_ratio = 1.0 - cfg.layout.left_width_ratio
+    for name, pos in cfg.layout.panels.items():
+        imgui.separator()
+        imgui.text(name.upper())
 
-    changed, cfg.layout.estop_height_ratio = imgui.slider_float(
-        "E-stop Height Ratio", cfg.layout.estop_height_ratio, 0.0, 1.0
-    )
-    cfg.layout.estop_height_ratio = clamp01(cfg.layout.estop_height_ratio)
+        changed, pos["row"] = imgui.input_int(f"{name} row", pos["row"])
+        changed, pos["col"] = imgui.input_int(f"{name} col", pos["col"])
 
-    changed, cfg.layout.settings_height_ratio = imgui.slider_float(
-        "Settings Height Ratio", cfg.layout.settings_height_ratio, 0.0, 1.0
-    )
-    cfg.layout.settings_height_ratio = clamp01(cfg.layout.settings_height_ratio)
+        if pos["row"] < 0:
+            pos["row"] = 0
 
-    changed, cfg.layout.telemetry_height_ratio = imgui.slider_float(
-        "Telemetry Height Ratio", cfg.layout.telemetry_height_ratio, 0.0, 1.0
-    )
-    cfg.layout.telemetry_height_ratio = clamp01(cfg.layout.telemetry_height_ratio)
-
-    remaining = 1.0 - (
-        cfg.layout.estop_height_ratio +
-        cfg.layout.settings_height_ratio +
-        cfg.layout.telemetry_height_ratio
-    )
-    cfg.layout.rover_icon_height_ratio = max(0.0, remaining)
+        if pos["col"] < 0:
+            pos["col"] = 0
+        elif pos["col"] > 1:
+            pos["col"] = 1
 
     imgui.separator()
     imgui.text("Panels")

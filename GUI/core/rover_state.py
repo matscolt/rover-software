@@ -23,10 +23,7 @@ class RoverState:
         self.shutdown_popup_open = False
         self.shutdown_popup_choice = None
         self.prev_keys = {}
-
-        # Optional reference to persistent config
-        self.config = None
-
+        
         #settings popup       
         self.config = None
         self.edit_config = None

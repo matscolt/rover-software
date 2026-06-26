@@ -8,44 +8,55 @@ from panels.E_stop import draw_estop_panel
 from panels.shutdown_popup import draw_shutdown_popup
 from config.settings_manager import draw_settings_popup
 
+def draw_panel_by_name(name, state):
+    if name == "camera":
+        draw_camera_panel(state)
+    elif name == "estop":
+        draw_estop_panel(state)
+    elif name == "settings":
+        draw_settings_panel(state)
+    elif name == "telemetry":
+        draw_telemetry_panel(state)
+    elif name == "rover_icon":
+        draw_rover_icon_panel(state)
+
+
 def draw_layout(state):
     width, height = imgui.get_io().display_size
-    cfg = state.config.layout
-    panels = state.config.panels
 
-    left_width = width * cfg.left_width_ratio
-    right_width = width * cfg.right_width_ratio
+    panels_cfg = state.config.layout.panels
+    panel_visibility = state.config.panels
 
-    y0 = 0
-    y1 = height * cfg.estop_height_ratio
-    y2 = y1 + height * cfg.settings_height_ratio
-    y3 = y2 + height * cfg.telemetry_height_ratio
-    y4 = height
+    cols = 2
+    rows = max(p["row"] for p in panels_cfg.values()) + 1
 
-    if panels.show_camera:
-        imgui.set_next_window_position(0, 0)
-        imgui.set_next_window_size(left_width, height)
-        draw_camera_panel(state)
+    col_width = width / cols
+    row_height = height / rows
 
-    if panels.show_estop:
-        imgui.set_next_window_position(left_width, y0)
-        imgui.set_next_window_size(right_width, y1 - y0)
-        draw_estop_panel(state)
+    used_positions = set()
 
-    if panels.show_settings:
-        imgui.set_next_window_position(left_width, y1)
-        imgui.set_next_window_size(right_width, y2 - y1)
-        draw_settings_panel(state)
+    for name, pos in panels_cfg.items():
 
-    if panels.show_telemetry:
-        imgui.set_next_window_position(left_width, y2)
-        imgui.set_next_window_size(right_width, y3 - y2)
-        draw_telemetry_panel(state)
+        # skip disabled panels
+        if not getattr(panel_visibility, f"show_{name}", True):
+            continue
 
-    if panels.show_rover_icon:
-        imgui.set_next_window_position(left_width, y3)
-        imgui.set_next_window_size(right_width, y4 - y3)
-        draw_rover_icon_panel(state)
+        row = max(0, pos["row"])
+        col = max(0, min(cols - 1, pos["col"]))
+
+        # prevent overlap
+        while (row, col) in used_positions:
+            row += 1
+
+        used_positions.add((row, col))
+
+        x = col * col_width
+        y = row * row_height
+
+        imgui.set_next_window_position(x, y)
+        imgui.set_next_window_size(col_width, row_height)
+
+        draw_panel_by_name(name, state)
 
     draw_shutdown_popup(state)
 
