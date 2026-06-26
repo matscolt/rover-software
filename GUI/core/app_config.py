@@ -29,18 +29,11 @@ class LayoutConfig:
     # New grid-based layout
     panels: dict = field(default_factory=lambda: {
         "camera": {"row": 0, "col": 0},
-        "estop": {"row": 0, "col": 1},
+        "estop": {"row": None, "col": 1},
         "settings": {"row": 1, "col": 1},
         "telemetry": {"row": 2, "col": 1},
         "rover_icon": {"row": 3, "col": 1},
     })
-@dataclass
-class PanelsConfig:
-    show_camera: bool = True
-    show_estop: bool = True
-    show_settings: bool = True
-    show_telemetry: bool = True
-    show_rover_icon: bool = True
 
 @dataclass
 class CameraConfig:
@@ -53,6 +46,5 @@ class CameraConfig:
 class AppConfig:
     window: WindowConfig = field(default_factory=WindowConfig)
     layout: LayoutConfig = field(default_factory=LayoutConfig)
-    panels: PanelsConfig = field(default_factory=PanelsConfig)
     camera: CameraConfig = field(default_factory=CameraConfig)
     keybinds: KeybindsConfig = field(default_factory=KeybindsConfig)

@@ -25,39 +25,45 @@ def draw_layout(state):
     width, height = imgui.get_io().display_size
 
     panels_cfg = state.config.layout.panels
-    panel_visibility = state.config.panels
 
     cols = 2
-    rows = max(p["row"] for p in panels_cfg.values()) + 1
-
     col_width = width / cols
-    row_height = height / rows
 
-    used_positions = set()
+    # group panels by column
+    columns = {0: [], 1: []}
 
     for name, pos in panels_cfg.items():
-
-        # skip disabled panels
-        if not getattr(panel_visibility, f"show_{name}", True):
+        # if either is None -> disabled
+        if pos["col"] is None or pos["row"] is None:
             continue
 
-        row = max(0, pos["row"])
         col = max(0, min(cols - 1, pos["col"]))
+        row = max(0, pos["row"])
 
-        # prevent overlap
-        while (row, col) in used_positions:
-            row += 1
+        columns[col].append((row, name))
 
-        used_positions.add((row, col))
+    # sort each column by row (sequence only)
+    for col in columns:
+        columns[col].sort(key=lambda x: x[0])
 
-        x = col * col_width
-        y = row * row_height
+    # draw panels stacked inside each column
+    for col in range(cols):
+        col_panels = columns[col]
 
-        imgui.set_next_window_position(x, y)
-        imgui.set_next_window_size(col_width, row_height)
+        if not col_panels:
+            continue
 
-        draw_panel_by_name(name, state)
+        panel_count = len(col_panels)
+        panel_height = height / panel_count
+
+        for i, (_, name) in enumerate(col_panels):
+            x = col * col_width
+            y = i * panel_height
+
+            imgui.set_next_window_position(x, y)
+            imgui.set_next_window_size(col_width, panel_height)
+
+            draw_panel_by_name(name, state)
 
     draw_shutdown_popup(state)
-
     draw_settings_popup(state)

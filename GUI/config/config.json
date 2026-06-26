@@ -19,7 +19,7 @@
             },
             "estop": {
                 "row": 0,
-                "col": 1
+                "col": null
             },
             "settings": {
                 "row": 1,
@@ -34,13 +34,6 @@
                 "col": 1
             }
         }
-    },
-    "panels": {
-        "show_camera": true,
-        "show_estop": true,
-        "show_settings": true,
-        "show_telemetry": true,
-        "show_rover_icon": true
     },
     "camera": {
         "default_camera": 0,

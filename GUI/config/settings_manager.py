@@ -6,7 +6,6 @@ from core.app_config import (
     AppConfig,
     WindowConfig,
     LayoutConfig,
-    PanelsConfig,
     CameraConfig,
     KeybindsConfig,
 )
@@ -24,7 +23,6 @@ def load_config() -> AppConfig:
     return AppConfig(
         window=WindowConfig(**raw.get("window", {})),
         layout=LayoutConfig(**raw.get("layout", {})),
-        panels=PanelsConfig(**raw.get("panels", {})),
         camera=CameraConfig(**raw.get("camera", {})),
         keybinds=KeybindsConfig(**raw.get("keybinds", {})),
     )
@@ -34,7 +32,6 @@ def save_config(config: AppConfig) -> None:
     data = {
         "window": vars(config.window),
         "layout": vars(config.layout),
-        "panels": vars(config.panels),
         "camera": vars(config.camera),
         "keybinds": vars(config.keybinds),
     }
@@ -83,30 +80,45 @@ def draw_settings_popup(state):
 
     imgui.separator()
     imgui.text("Panel Placement")
-    imgui.text("Columns are capped at 2 (0 or 1).")
+    imgui.text("Column decides the column. Row decides the order inside that column.")
+    imgui.text("Selecting 'none' disables the panel.")
+
+    column_options = ["none", "0", "1"]
+    row_options = ["none", "0", "1", "2", "3"]
+
+    def combo_from_options(label, current_value, options):
+        current_text = "none" if current_value is None else str(current_value)
+
+        if current_text not in options:
+            current_text = "none"
+
+        current_index = options.index(current_text)
+        changed, new_index = imgui.combo(label, current_index, options)
+
+        if changed:
+            selected = options[new_index]
+            return None if selected == "none" else int(selected)
+
+        return current_value
 
     for name, pos in cfg.layout.panels.items():
         imgui.separator()
-        imgui.text(name.upper())
+        imgui.text(name)
+        imgui.same_line(160)
 
-        changed, pos["row"] = imgui.input_int(f"{name} row", pos["row"])
-        changed, pos["col"] = imgui.input_int(f"{name} col", pos["col"])
+        pos["col"] = combo_from_options(
+            f"##{name}_col",
+            pos["col"],
+            column_options
+        )
 
-        if pos["row"] < 0:
-            pos["row"] = 0
+        imgui.same_line()
 
-        if pos["col"] < 0:
-            pos["col"] = 0
-        elif pos["col"] > 1:
-            pos["col"] = 1
-
-    imgui.separator()
-    imgui.text("Panels")
-    changed, cfg.panels.show_camera = imgui.checkbox("Show Camera Panel", cfg.panels.show_camera)
-    changed, cfg.panels.show_settings = imgui.checkbox("Show Settings Panel", cfg.panels.show_settings)
-    changed, cfg.panels.show_telemetry = imgui.checkbox("Show Telemetry Panel", cfg.panels.show_telemetry)
-    changed, cfg.panels.show_rover_icon = imgui.checkbox("Show Rover Icon Panel", cfg.panels.show_rover_icon)
-
+        pos["row"] = combo_from_options(
+            f"##{name}_row",
+            pos["row"],
+            row_options
+        )
     imgui.separator()
     imgui.text("Camera")
     changed, cfg.camera.default_camera = imgui.input_int("Default Camera", cfg.camera.default_camera)
